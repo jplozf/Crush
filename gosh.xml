@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<commands>
+	<command title='Infos WSUS'>
+		<value>reg query </value>
+		<label>Infos WSUS</label>
+		<group>
+			<options>
+				<option format='SYSNAME' nospace="">
+					<value>\\</value>
+					<label>PC</label>
+				</option>
+				<option format='TRAILING' nospace="">
+					<value>\HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate</value>
+				</option>
+			</options>
+		</group>
+	</command>        			
+	<command title='Heure de demarrage du PC'>
+		<value>systeminfo</value>
+		<label>Heure de demarrage du PC</label>
+		<group>
+			<options>
+				<option format='SYSNAME'>
+					<value>/S</value>
+					<label>PC</label>
+				</option>
+				<option format='TRAILING'>
+					<value>| find "Heure"</value>
+				</option>
+			</options>
+		</group>
+	</command>        			
+	<command title='Is update installed'>
+		<value>wmic</value>
+		<label>Is update installed in this PC ?</label>
+		<group>
+			<options>
+				<option format='ESCSTRING'>
+					<value>/node:</value>
+					<label>PC</label>
+				</option>
+				<option format='ESCSTRING'>
+					<value>qfe | find</value>
+					<label>KB</label>
+				</option>
+			</options>
+		</group>
+	</command>        
+	<command title='Informations systeme'>
+		<value>systeminfo</value>
+		<label>Informations de configuration du systeme</label>
+			<group>
+				<options>
+					<option format='BUTTON'>
+						<value>/?</value>
+					<label>Aide</label>
+					</option>
+				</options>
+			</group>
+			<group>
+			<options>
+				<option format='SYSNAME'>
+					<value>/S</value>
+					<label>Systeme</label>
+					<group>
+						<options>
+							<option format='USERNAME'>
+								<value>/U</value>
+								<label>Utilisateur</label>
+								<group>
+									<options>
+										<option format='PASSWORD'>
+											<value>/P</value>
+											<label>Mot de passe</label>
+										</option>
+									</options>
+								</group>
+							</option>
+						</options>
+					</group>
+				</option>
+				<group>
+					<options>
+						<option format='LIST'>
+							<value>/FO</value>
+							<label>Format</label>
+							<list>
+								<item>TABLE</item>
+								<item>LIST</item>
+								<item>CSV</item>
+							</list>
+							<group>
+								<options>
+									<option format='CHECKBOX'>
+										<value>/NH</value>
+										<label>Pas d'en-tete</label>
+									</option>
+								</options>
+							</group>
+						</option>
+					</options>
+				</group>
+			</options>
+		</group>
+	</command>
+</commands>

@@ -1,0 +1,178 @@
+<RCC>
+    <qresource prefix="/">
+        <file>16x16/Action Redo.png</file>
+        <file>16x16/Action Undo.png</file>
+        <file>16x16/Arrow2 - Down.png</file>
+        <file>16x16/Arrow2 - Left.png</file>
+        <file>16x16/Arrow2 - Right.png</file>
+        <file>16x16/Arrow2 - Up.png</file>
+        <file>16x16/Arrow - Down.png</file>
+        <file>16x16/Arrow - DownLeft.png</file>
+        <file>16x16/Arrow - DownRight.png</file>
+        <file>16x16/Arrow - Left.png</file>
+        <file>16x16/Arrow Next.png</file>
+        <file>16x16/Arrow Previous.png</file>
+        <file>16x16/Arrow - Right.png</file>
+        <file>16x16/Arrow - Up.png</file>
+        <file>16x16/Arrow - UpLeft.png</file>
+        <file>16x16/Arrow - UpRight.png</file>
+        <file>16x16/Attach.png</file>
+        <file>16x16/Back.png</file>
+        <file>16x16/Back Top.png</file>
+        <file>16x16/Bubble1.png</file>
+        <file>16x16/Bubble2.png</file>
+        <file>16x16/Bubble3.png</file>
+        <file>16x16/Bubble4.png</file>
+        <file>16x16/Bubble5.png</file>
+        <file>16x16/Bubble6.png</file>
+        <file>16x16/Bug.png</file>
+        <file>16x16/Calc.png</file>
+        <file>16x16/Cancel.png</file>
+        <file>16x16/Cart.png</file>
+        <file>16x16/Char - Amp.png</file>
+        <file>16x16/Char - Bracket Left.png</file>
+        <file>16x16/Char - Bracket Right.png</file>
+        <file>16x16/Char - Colon.png</file>
+        <file>16x16/Char - Comma.png</file>
+        <file>16x16/Char - Dot.png</file>
+        <file>16x16/Char - Equal.png</file>
+        <file>16x16/Char - Less.png</file>
+        <file>16x16/Char - Minus.png</file>
+        <file>16x16/Char - More.png</file>
+        <file>16x16/Char - Number.png</file>
+        <file>16x16/Char - Parenthesis Left.png</file>
+        <file>16x16/Char - Parenthesis Right.png</file>
+        <file>16x16/Char - Percent.png</file>
+        <file>16x16/Char - Quotation.png</file>
+        <file>16x16/Char - Semicolon.png</file>
+        <file>16x16/Char - Slash.png</file>
+        <file>16x16/Char - Smiley 1.png</file>
+        <file>16x16/Char - Smiley 2.png</file>
+        <file>16x16/Char - Smiley 3.png</file>
+        <file>16x16/Char - Smiley 4.png</file>
+        <file>16x16/Char - Star.png</file>
+        <file>16x16/Char - Tilde.png</file>
+        <file>16x16/Chat.png</file>
+        <file>16x16/Clipboard Copy.png</file>
+        <file>16x16/Clipboard Cut.png</file>
+        <file>16x16/Clipboard Paste.png</file>
+        <file>16x16/Clock.png</file>
+        <file>16x16/Close.png</file>
+        <file>16x16/Computer.png</file>
+        <file>16x16/Construction.png</file>
+        <file>16x16/Copyright.png</file>
+        <file>16x16/Document.png</file>
+        <file>16x16/Document Graph.png</file>
+        <file>16x16/Document Spreadsheet.png</file>
+        <file>16x16/Document Text.png</file>
+        <file>16x16/Dollar.png</file>
+        <file>16x16/Dollar2.png</file>
+        <file>16x16/Download.png</file>
+        <file>16x16/Email.png</file>
+        <file>16x16/Euro.png</file>
+        <file>16x16/Exclamation.png</file>
+        <file>16x16/Face.png</file>
+        <file>16x16/Face Happy.png</file>
+        <file>16x16/Face Sad.png</file>
+        <file>16x16/Flag.png</file>
+        <file>16x16/Folder.png</file>
+        <file>16x16/Folder Open.png</file>
+        <file>16x16/Folder Up.png</file>
+        <file>16x16/Forbidden.png</file>
+        <file>16x16/Fullscreen.png</file>
+        <file>16x16/Gear.png</file>
+        <file>16x16/Gears.png</file>
+        <file>16x16/Globe.png</file>
+        <file>16x16/Hand.png</file>
+        <file>16x16/Health.png</file>
+        <file>16x16/Heart.png</file>
+        <file>16x16/Home.png</file>
+        <file>16x16/Info.png</file>
+        <file>16x16/Info2.png</file>
+        <file>16x16/Internet.png</file>
+        <file>16x16/Key.png</file>
+        <file>16x16/Light.png</file>
+        <file>16x16/Light Off.png</file>
+        <file>16x16/Link.png</file>
+        <file>16x16/Lock.png</file>
+        <file>16x16/Lock Open.png</file>
+        <file>16x16/Loop.png</file>
+        <file>16x16/Mail.png</file>
+        <file>16x16/Man.png</file>
+        <file>16x16/Media.png</file>
+        <file>16x16/Minus.png</file>
+        <file>16x16/Mouse.png</file>
+        <file>16x16/Music.png</file>
+        <file>16x16/Music2.png</file>
+        <file>16x16/My Documents.png</file>
+        <file>16x16/My Images.png</file>
+        <file>16x16/My Music.png</file>
+        <file>16x16/Network.png</file>
+        <file>16x16/No.png</file>
+        <file>16x16/Nuke.png</file>
+        <file>16x16/Ok.png</file>
+        <file>16x16/Ok2.png</file>
+        <file>16x16/Pen.png</file>
+        <file>16x16/Percent.png</file>
+        <file>16x16/Phone.png</file>
+        <file>16x16/Photo.png</file>
+        <file>16x16/Plane.png</file>
+        <file>16x16/Player Eject.png</file>
+        <file>16x16/Player FastFwd.png</file>
+        <file>16x16/Player FastRwd.png</file>
+        <file>16x16/Player Next.png</file>
+        <file>16x16/Player Pause.png</file>
+        <file>16x16/Player Play.png</file>
+        <file>16x16/Player Previous.png</file>
+        <file>16x16/Player Record.png</file>
+        <file>16x16/Player Slow.png</file>
+        <file>16x16/Player Stop.png</file>
+        <file>16x16/Plus.png</file>
+        <file>16x16/Pointer.png</file>
+        <file>16x16/Poll.png</file>
+        <file>16x16/Pound.png</file>
+        <file>16x16/Printer.png</file>
+        <file>16x16/Print Preview.png</file>
+        <file>16x16/Properties.png</file>
+        <file>16x16/Question.png</file>
+        <file>16x16/Question2.png</file>
+        <file>16x16/Question - Bold.png</file>
+        <file>16x16/Recycle.png</file>
+        <file>16x16/Refresh.png</file>
+        <file>16x16/Rotate.png</file>
+        <file>16x16/Rss 1.png</file>
+        <file>16x16/Rss 2.png</file>
+        <file>16x16/Save.png</file>
+        <file>16x16/Search.png</file>
+        <file>16x16/Security.png</file>
+        <file>16x16/Shutdown.png</file>
+        <file>16x16/Sleep.png</file>
+        <file>16x16/Sound.png</file>
+        <file>16x16/Sound Decrease.png</file>
+        <file>16x16/Sound Increase.png</file>
+        <file>16x16/Sound Mute.png</file>
+        <file>16x16/Standby.png</file>
+        <file>16x16/Star.png</file>
+        <file>16x16/Star2.png</file>
+        <file>16x16/Star Empty.png</file>
+        <file>16x16/Stats.png</file>
+        <file>16x16/Target.png</file>
+        <file>16x16/Text2.png</file>
+        <file>16x16/Text Decrease.png</file>
+        <file>16x16/Text Increase.png</file>
+        <file>16x16/Time.png</file>
+        <file>16x16/Trash.png</file>
+        <file>16x16/Under Construction.png</file>
+        <file>16x16/Upload.png</file>
+        <file>16x16/User.png</file>
+        <file>16x16/Users.png</file>
+        <file>16x16/Video.png</file>
+        <file>16x16/Wizard.png</file>
+        <file>16x16/Woman.png</file>
+        <file>16x16/Write.png</file>
+        <file>16x16/Zoom In.png</file>
+        <file>16x16/Zoom Out.png</file>
+        <file>led_green.png</file>
+        <file>led_red.png</file>
+    </qresource>
+</RCC>
