@@ -157,6 +157,24 @@ QString CommandUI::parse(const QString fName, const QString cmd, QVBoxLayout *la
 }
 
 //******************************************************************************
+// addOptionList()
+//******************************************************************************
+void CommandUI::addOptionList(QVBoxLayout* layout, int row, const QDomElement& option) {
+    QHBoxLayout* lineLayout = new QHBoxLayout();
+    layout->addLayout(lineLayout, row);
+    QComboBox* myListBox = new QComboBox();
+    QDomElement opt = option;
+    QObject::connect(myListBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+        [=](int index) {
+            qDebug() << "connecting";
+            uiListboxEvent(myListBox, index, opt);
+        }
+    );
+    lineLayout->addWidget(new QLabel(getLabel(option)));
+    lineLayout->addWidget(myListBox);
+}
+
+//******************************************************************************
 // addOptionLink()
 //******************************************************************************
 void CommandUI::addOptionLink(QVBoxLayout* layout, int row, const QDomElement& option) {
@@ -165,9 +183,9 @@ void CommandUI::addOptionLink(QVBoxLayout* layout, int row, const QDomElement& o
     QPushButton* myButton = new QPushButton();
     QDomElement opt = option;
     QObject::connect(myButton, &QPushButton::clicked,
-        [=](const QString v) {
+        [=]() {
             qDebug() << "connecting";
-            uiButtonEvent(myButton, v, opt);
+            uiButtonEvent(opt);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -341,6 +359,23 @@ void CommandUI::uiButtonEvent(const QDomElement& option) {
     findElementsWithTagName(option, QString("value"), elm);
     qDebug() << elm.at(0).text();
     addParameter(elm.at(0).text(), "");
+    updateCommandLine();
+}
+
+//******************************************************************************
+// uiListboxEvent()
+//******************************************************************************
+void CommandUI::uiListboxEvent(QComboBox* listBox, int index, const QDomElement& option) {
+    if (value == "") {
+        QList<QDomElement> elm;
+        findElementsWithTagName(option, QString("value"), elm);
+        removeParameter(elm.at(0).text());
+    } else {
+        QList<QDomElement> elm;
+        findElementsWithTagName(option, QString("value"), elm);
+        qDebug() << elm.at(0).text();
+        addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option));
+    }
     updateCommandLine();
 }
 

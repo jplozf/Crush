@@ -13,6 +13,7 @@
 #include <QFile>
 #include <QGroupBox>
 #include <QLineEdit>
+#include <QComboBox>
 #include <QMap>
 
 QT_BEGIN_NAMESPACE
@@ -65,6 +66,7 @@ private slots:
     void uiEscStringEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
     void uiPasswordEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
     void uiButtonEvent(const QDomElement& option);
+    void uiListboxEvent(QComboBox* listBox, int index, const QDomElement& option);
 
 };
 
