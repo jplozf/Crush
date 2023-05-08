@@ -21,6 +21,8 @@ Constants::Constants()
     constants["COMMANDS_FILE"]          = std::string("crush.xml");
     constants["WEB_REPOSITORY"]         = std::string("https://www.ozf.fr/crush/");
     constants["XML_SUBFOLDER"]          = std::string("xml/");
+
+    constants["NOT_AVAILABLE_LABEL"]    = std::string("NOT_AVAILABLE_LABEL");
 }
 
 //******************************************************************************

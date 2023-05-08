@@ -14,7 +14,11 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QMap>
+#include <QFileDialog>
+#include <QDir>
+#include "app.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,7 +29,7 @@ class CommandUI : public QObject
     Q_OBJECT
 
 public:
-    explicit CommandUI(const QString fName, const QString cmd, Ui::MainWindow* ui);
+    explicit CommandUI(const QString fName, const QString cmd, Ui::MainWindow* ui, App* app);
 
 private:
     Ui::MainWindow* ui;
@@ -33,6 +37,8 @@ private:
     QString cmd;
     QWidget *widget;
     QString xeq;
+    App *app;
+    int anonymous;
     mutable QMutex mutex;
     QMap<QString, QString> par;
     QList<QString> trailing;
@@ -57,6 +63,7 @@ private:
     void removeParameter(QString param);
     QString spaceOrNot(const QDomElement& option);
     QString getLabel(const QDomElement& option);
+    QString getExtensionFile(const QDomElement& option);
     void updateCommandLine();
     void addSpacer(QVBoxLayout* layout, int row);
 
@@ -67,6 +74,15 @@ private slots:
     void uiPasswordEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
     void uiButtonEvent(const QDomElement& option);
     void uiListboxEvent(QComboBox* listBox, int index, const QDomElement& option);
+    void uiButtonFileEvent(QLineEdit* fileEdit, QString ext);
+    void uiButtonNewFileEvent(QLineEdit* fileEdit, QString ext);
+    void uiFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
+    void uiNewFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
+    void uiDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
+    void uiButtonDirEvent(QLineEdit* fileEdit);
+    void uiNewDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
+    void uiButtonNewDirEvent(QLineEdit* fileEdit);
+    void uiCheckboxEvent(QCheckBox* checkBox, int state, const QDomElement& option);
 
 };
 

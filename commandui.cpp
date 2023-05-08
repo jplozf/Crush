@@ -4,11 +4,12 @@
 //******************************************************************************
 // CommandUI()
 //******************************************************************************
-CommandUI::CommandUI(const QString fName, const QString cmd, Ui::MainWindow* ui) {
+CommandUI::CommandUI(const QString fName, const QString cmd, Ui::MainWindow* ui, App* app) {
     this->fName = fName;
     this->cmd = cmd;
     this->ui = ui;
     this->widget = ui->pnlArguments;
+    this->app = app;
     // par = new(QMap <QString, QString>);
 
     QVBoxLayout* layout{dynamic_cast<QVBoxLayout*>(widget->layout())};
@@ -157,6 +158,85 @@ QString CommandUI::parse(const QString fName, const QString cmd, QVBoxLayout *la
 }
 
 //******************************************************************************
+// addOptionTrailing()
+//******************************************************************************
+void CommandUI::addOptionTrailing(QVBoxLayout* layout, int row, const QDomElement& option) {
+    QList<QDomElement> elm;
+    findElementsWithTagName(option, QString("value"), elm);
+    this->trailing.append(spaceOrNot(option) + elm.at(0).text() + spaceOrNot(option));
+}
+
+//******************************************************************************
+// addOptionCheckbox()
+//******************************************************************************
+void CommandUI::addOptionCheckbox(QVBoxLayout* layout, int row, const QDomElement& option) {
+    QHBoxLayout* lineLayout = new QHBoxLayout();
+    layout->addLayout(lineLayout, row);
+    QCheckBox* myCheckBox = new QCheckBox();
+    QDomElement opt = option;
+    QObject::connect(myCheckBox, &QCheckBox::stateChanged,
+        [=](const int state) {
+            qDebug() << "connecting";
+            uiCheckboxEvent(myCheckBox, state, opt);
+        }
+    );
+    lineLayout->addWidget(new QLabel(getLabel(option)));
+    lineLayout->addWidget(myCheckBox);
+}
+
+//******************************************************************************
+// addOptionDir()
+//******************************************************************************
+void CommandUI::addOptionDir(QVBoxLayout* layout, int row, const QDomElement& option) {
+    QHBoxLayout* lineLayout = new QHBoxLayout();
+    layout->addLayout(lineLayout, row);
+    QLineEdit* myFileEdit = new QLineEdit();
+    QDomElement opt = option;
+    QObject::connect(myFileEdit, &QLineEdit::textChanged,
+        [=](const QString v) {
+            qDebug() << "connecting";
+            uiDirEvent(myFileEdit, v, opt);
+        }
+    );
+    QPushButton* myButtonFile = new QPushButton();
+    myButtonFile->setIcon(QIcon("16x16/Document.png"));
+    QObject::connect(myButtonFile, &QPushButton::clicked,
+        [=]() {
+            uiButtonDirEvent(myFileEdit);
+        }
+    );
+    lineLayout->addWidget(new QLabel(getLabel(option)));
+    lineLayout->addWidget(myFileEdit);
+    lineLayout->addWidget(myButtonFile);
+}
+
+//******************************************************************************
+// addOptionNewDir()
+//******************************************************************************
+void CommandUI::addOptionNewDir(QVBoxLayout* layout, int row, const QDomElement& option) {
+    QHBoxLayout* lineLayout = new QHBoxLayout();
+    layout->addLayout(lineLayout, row);
+    QLineEdit* myFileEdit = new QLineEdit();
+    QDomElement opt = option;
+    QObject::connect(myFileEdit, &QLineEdit::textChanged,
+        [=](const QString v) {
+            qDebug() << "connecting";
+            uiNewDirEvent(myFileEdit, v, opt);
+        }
+    );
+    QPushButton* myButtonFile = new QPushButton();
+    myButtonFile->setIcon(QIcon("16x16/Document.png"));
+    QObject::connect(myButtonFile, &QPushButton::clicked,
+        [=]() {
+            uiButtonNewDirEvent(myFileEdit);
+        }
+    );
+    lineLayout->addWidget(new QLabel(getLabel(option)));
+    lineLayout->addWidget(myFileEdit);
+    lineLayout->addWidget(myButtonFile);
+}
+
+//******************************************************************************
 // addOptionList()
 //******************************************************************************
 void CommandUI::addOptionList(QVBoxLayout* layout, int row, const QDomElement& option) {
@@ -247,6 +327,58 @@ void CommandUI::addOptionPassword(QVBoxLayout* layout, int row, const QDomElemen
 }
 
 //******************************************************************************
+// addOptionFile()
+//******************************************************************************
+void CommandUI::addOptionFile(QVBoxLayout* layout, int row, const QDomElement& option) {
+    QHBoxLayout* lineLayout = new QHBoxLayout();
+    layout->addLayout(lineLayout, row);
+    QLineEdit* myFileEdit = new QLineEdit();
+    QDomElement opt = option;
+    QObject::connect(myFileEdit, &QLineEdit::textChanged,
+        [=](const QString v) {
+            qDebug() << "connecting";
+            uiFileEvent(myFileEdit, v, opt);
+        }
+    );
+    QPushButton* myButtonFile = new QPushButton();
+    myButtonFile->setIcon(QIcon("16x16/Document.png"));
+    QObject::connect(myButtonFile, &QPushButton::clicked,
+        [=]() {
+            uiButtonFileEvent(myFileEdit, getExtensionFile(option));
+        }
+    );
+    lineLayout->addWidget(new QLabel(getLabel(option)));
+    lineLayout->addWidget(myFileEdit);
+    lineLayout->addWidget(myButtonFile);
+}
+
+//******************************************************************************
+// addOptionNewFile()
+//******************************************************************************
+void CommandUI::addOptionNewFile(QVBoxLayout* layout, int row, const QDomElement& option) {
+    QHBoxLayout* lineLayout = new QHBoxLayout();
+    layout->addLayout(lineLayout, row);
+    QLineEdit* myFileEdit = new QLineEdit();
+    QDomElement opt = option;
+    QObject::connect(myFileEdit, &QLineEdit::textChanged,
+        [=](const QString v) {
+            qDebug() << "connecting";
+            uiNewFileEvent(myFileEdit, v, opt);
+        }
+    );
+    QPushButton* myButtonFile = new QPushButton();
+    myButtonFile->setIcon(QIcon("16x16/Document.png"));
+    QObject::connect(myButtonFile, &QPushButton::clicked,
+        [=]() {
+            uiButtonNewFileEvent(myFileEdit, getExtensionFile(option));
+        }
+    );
+    lineLayout->addWidget(new QLabel(getLabel(option)));
+    lineLayout->addWidget(myFileEdit);
+    lineLayout->addWidget(myButtonFile);
+}
+
+//******************************************************************************
 // addOptionSysname()
 //******************************************************************************
 void CommandUI::addOptionSysname(QVBoxLayout* layout, int row, const QDomElement& option) {
@@ -298,6 +430,19 @@ QString CommandUI::getLabel(const QDomElement& option) {
             sLabel = label.text
         return sLabel
     */
+}
+
+//******************************************************************************
+// getExtensionFile()
+//******************************************************************************
+QString CommandUI::getExtensionFile(const QDomElement& option) {
+    QString ext = "*NONE";
+    QList<QDomElement> elmExts;
+    findElementsWithTagName(option, QString("ext"), elmExts);
+    if (!elmExts.isEmpty()) {
+        ext = elmExts[0].text();
+    }
+    return ext;
 }
 
 //******************************************************************************
@@ -366,6 +511,7 @@ void CommandUI::uiButtonEvent(const QDomElement& option) {
 // uiListboxEvent()
 //******************************************************************************
 void CommandUI::uiListboxEvent(QComboBox* listBox, int index, const QDomElement& option) {
+    QString value = listBox->itemText(index);
     if (value == "") {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
@@ -375,6 +521,64 @@ void CommandUI::uiListboxEvent(QComboBox* listBox, int index, const QDomElement&
         findElementsWithTagName(option, QString("value"), elm);
         qDebug() << elm.at(0).text();
         addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option));
+    }
+    updateCommandLine();
+}
+
+//******************************************************************************
+// uiCheckboxEvent()
+//******************************************************************************
+void CommandUI::uiCheckboxEvent(QCheckBox* listBox, int state, const QDomElement& option) {
+    if (state == Qt::Checked) {
+        QList<QDomElement> elm;
+        findElementsWithTagName(option, QString("value"), elm);
+        addParameter(elm.at(0).text(), "");
+    } else {
+        QList<QDomElement> elm;
+        findElementsWithTagName(option, QString("value"), elm);
+        removeParameter(elm.at(0).text());
+    }
+    updateCommandLine();
+}
+
+//******************************************************************************
+// uiFileEvent()
+//******************************************************************************
+void CommandUI::uiFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {   
+    QString name;
+    QList<QDomElement> elm;
+    findElementsWithTagName(option, QString("value"), elm);
+    if (elm.isEmpty()) {
+        name.sprintf("%s_%05d", app->appConstants->getQString("NOT_AVAILABLE_LABEL").toStdString().c_str(), this->anonymous);
+        this->anonymous++;
+    } else {
+        name.sprintf("%s", elm.at(0).text().toStdString().c_str());
+    }
+    if (value == "") {
+        removeParameter(name);
+    } else {
+        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option));
+    }
+    updateCommandLine();
+}
+
+//******************************************************************************
+// uiNewFileEvent()
+//******************************************************************************
+void CommandUI::uiNewFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+    QString name;
+    QList<QDomElement> elm;
+    findElementsWithTagName(option, QString("value"), elm);
+    if (elm.isEmpty()) {
+        name.sprintf("%s_%05d", app->appConstants->getQString("NOT_AVAILABLE_LABEL").toStdString().c_str(), this->anonymous);
+        this->anonymous++;
+    } else {
+        name.sprintf("%s", elm.at(0).text().toStdString().c_str());
+    }
+    if (value == "") {
+        removeParameter(name);
+    } else {
+        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option));
     }
     updateCommandLine();
 }
@@ -422,6 +626,88 @@ void CommandUI::uiSysnameEvent(QLineEdit* lineEdit, QString value, const QDomEle
         self.addParameter(option.find("value").text, self.spaceOrNot(option) + value + self.spaceOrNot(option))
     self.updateCommandLine()
     */
+}
+
+//******************************************************************************
+// uiButtonFileEvent()
+//******************************************************************************
+void CommandUI::uiButtonFileEvent(QLineEdit* fileEdit, QString ext) {
+    QString fileName = QFileDialog::getOpenFileName(NULL, tr("Open File"), QDir::currentPath(), ext);
+    fileEdit->setText(fileName);
+    /*
+    filename = str(QFileDialog.getOpenFileName(None, 'Open file', '', ext))
+    fileEdit.setText(os.path.normpath(filename))
+    */
+}
+
+//******************************************************************************
+// uiButtonNewFileEvent()
+//******************************************************************************
+void CommandUI::uiButtonNewFileEvent(QLineEdit* fileEdit, QString ext) {
+    QString fileName = QFileDialog::getSaveFileName(NULL, tr("New File"), QDir::currentPath(), ext);
+    fileEdit->setText(fileName);
+    /*
+    filename = str(QFileDialog.getOpenFileName(None, 'Open file', '', ext))
+    fileEdit.setText(os.path.normpath(filename))
+    */
+}
+
+//******************************************************************************
+// uiDirEvent()
+//******************************************************************************
+void CommandUI::uiDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+    QString name;
+    QList<QDomElement> elm;
+    findElementsWithTagName(option, QString("value"), elm);
+    if (elm.isEmpty()) {
+        name.sprintf("%s_%05d", app->appConstants->getQString("NOT_AVAILABLE_LABEL").toStdString().c_str(), this->anonymous);
+        this->anonymous++;
+    } else {
+        name.sprintf("%s", elm.at(0).text().toStdString().c_str());
+    }
+    if (value == "") {
+        removeParameter(name);
+    } else {
+        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option));
+    }
+    updateCommandLine();
+}
+
+//******************************************************************************
+// uiButtonDirEvent()
+//******************************************************************************
+void CommandUI::uiButtonDirEvent(QLineEdit* fileEdit) {
+    QString fileName = QFileDialog::getExistingDirectory(NULL, tr("Open directory"), QDir::currentPath());
+    fileEdit->setText(fileName);
+}
+
+//******************************************************************************
+// uiNewDirEvent()
+//******************************************************************************
+void CommandUI::uiNewDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+    QString name;
+    QList<QDomElement> elm;
+    findElementsWithTagName(option, QString("value"), elm);
+    if (elm.isEmpty()) {
+        name.sprintf("%s_%05d", app->appConstants->getQString("NOT_AVAILABLE_LABEL").toStdString().c_str(), this->anonymous);
+        this->anonymous++;
+    } else {
+        name.sprintf("%s", elm.at(0).text().toStdString().c_str());
+    }
+    if (value == "") {
+        removeParameter(name);
+    } else {
+        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option));
+    }
+    updateCommandLine();
+}
+
+//******************************************************************************
+// uiButtonNewDirEvent()
+//******************************************************************************
+void CommandUI::uiButtonNewDirEvent(QLineEdit* fileEdit) {
+    QString fileName = QFileDialog::getExistingDirectory(NULL, tr("New directory source"), QDir::currentPath());
+    fileEdit->setText(fileName);
 }
 
 //******************************************************************************

@@ -34,7 +34,7 @@ MainWindow::~MainWindow() {
 void MainWindow::slotSelectCommand(const QString cmd) {
     // buildCommandScreen(cmd);
     // cUI.CommandsUI(os.path.join(self.appDir, const.COMMANDS_FILE), self.cbxCommands.currentText(), self)
-    CommandUI *cUI = new CommandUI(fName, cmd, ui);
+    CommandUI *cUI = new CommandUI(fName, cmd, ui, app);
 }
 
 //******************************************************************************
