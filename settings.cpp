@@ -7,25 +7,35 @@ Settings::Settings()
 {
     // Set  the defaults values...
 #ifdef Q_OS_LINUX
-    defaults["DEFAULT_EDITOR"] = QVariant("/usr/bin/geany");
-    defaults["DEFAULT_TERMINAL"] = QVariant("/usr/bin/tabby");
-    defaults["DEFAULT_BROWSER"] = QVariant("/usr/bin/google-chrome-stable");
-    defaults["GIT_BINARY_PATH"] = QVariant("/usr/bin/git");
-    defaults["DEFAULT_REPOSITORY"] = QVariant("~/Projets/");
 #else
-    defaults["DEFAULT_EDITOR"] = QVariant("C:/Program Files/PSPad editor/PSPad.exe");
-    defaults["DEFAULT_TERMINAL"] = QVariant("C:/Program Files (x86)/Mobatek/MobaXterm/MobaXterm.exe");
-    defaults["DEFAULT_BROWSER"] = QVariant("C:/Program Files/Google/Chrome/Application/chrome.exe");
-    defaults["GIT_BINARY_PATH"] = QVariant("C:/Program Files (x86)/git/git.exe");
-    defaults["DEFAULT_REPOSITORY"] = QVariant("C:/Projets/");
 #endif
-    defaults["MRU_PROJECTS"] = QVariant(5);
-    defaults["PROJECT_USER_NAME"] = QVariant("");
-    defaults["PROJECT_USER_COMPANY"] = QVariant("");
-    defaults["PROJECT_USER_MAIL"] = QVariant("");
-    defaults["PROJECT_USER_WEB"] = QVariant("");
-    defaults["DATETIME_FORMAT"] = QVariant("dddd, d MMMM yyyy @ hh:mm:ss");
+    defaults["CONSOLE_PROMPT"] = QVariant("Gosh >>> ");
+    defaults["CONSOLE_BACKGROUND"] = QVariant("#ffffff");
+    defaults["CONSOLE_FOREGROUND"] = QVariant("#000000");
+    defaults["CONSOLE_FONT_FAMILY"] = QVariant("Courier");
+    defaults["CONSOLE_FONT_SIZE"] = QVariant("8");
+    defaults["CONSOLE_FONT_STYLE"] = QVariant("normal");
+    defaults["CONSOLE_FONT_WEIGHT"] = QVariant("normal");
+    defaults["CONSOLE_CODEPAGE"] = QVariant("cp850");
+    defaults["COMMAND_FILE"] = QVariant("gosh.xml");
     defaults["STATUSBAR_TIMEOUT"] = QVariant(3000);
+    defaults["XML_KEYWORD_COLOR"] = QVariant("#8B008B");
+    defaults["XML_KEYWORD_WEIGHT"] = QVariant(QFont::Bold);
+    defaults["XML_KEYWORD_ITALIC"] = QVariant(false);
+    defaults["XML_ELEMENT_COLOR"] = QVariant("#117700");
+    defaults["XML_ELEMENT_WEIGHT"] = QVariant(QFont::Bold);
+    defaults["XML_ELEMENT_ITALIC"] = QVariant(false);
+    defaults["XML_ATTRIBUTE_COLOR"] = QVariant("#2020D2");
+    defaults["XML_ATTRIBUTE_WEIGHT"] = QVariant(QFont::Bold);
+    defaults["XML_ATTRIBUTE_ITALIC"] = QVariant(true);
+    defaults["XML_VALUE_COLOR"] = QVariant("#FF0000");
+    defaults["XML_VALUE_WEIGHT"] = QVariant(QFont::Normal);
+    defaults["XML_VALUE_ITALIC"] = QVariant(false);
+    defaults["XML_COMMENT_COLOR"] = QVariant("#808080");
+    defaults["XML_COMMENT_WEIGHT"] = QVariant(QFont::Normal);
+    defaults["XML_COMMENT_ITALIC"] = QVariant(false);
+    defaults["XML_TAB_STOP"] = QVariant(4);
+
     // Read the settings from user's settings
     read();
 
@@ -97,11 +107,6 @@ void Settings::form(QWidget *w) {
         connect(txtSetting, &QLineEdit::textChanged, [=]{handleTextChanged(lblSetting, txtSetting);});
         form->addRow(lblSetting, txtSetting);
     }
-    QLabel *lblSetting = new QLabel("Templates Customizing");
-    btnTemplatesCutomizing = new QPushButton("...");
-    form->addRow(lblSetting, btnTemplatesCutomizing);
-    // TODO : Add "Reset Templates Customizing" option
-
     w->setLayout(form);
 }
 

@@ -7,12 +7,14 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QDesktopWidget>
+#include <QTimer>
 
 #include "qobjectdefs.h"
 #include "ui_mainwindow.h"
 #include "app.h"
 #include "utils.h"
 #include "commandui.h"
+#include "BasicXMLSyntaxHighlighter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,6 +31,8 @@ public:
     void closeEvent(QCloseEvent *);
     void saveSettings();
     void readSettings();
+    void initUI();
+    bool dirtyFlag;
 
 private:
     Ui::MainWindow *ui;
@@ -38,10 +42,16 @@ private:
     QDomDocument xmlCommands;
     void showMessage(const QString &message, int timeout = -1);
     QString fName;
+    BasicXMLSyntaxHighlighter *highlighter ;
+    void setDelayed();
 
 private slots:
     void slotSelectCommand(const QString);
     void slotDoExit();
+    void slotDoEditXML();
+    void slotCursorPosition();
+    void slotTextChanged();
+    void slotDoSaveXML();
 
 };
 #endif // MAINWINDOW_H

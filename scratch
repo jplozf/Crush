@@ -1,0 +1,6 @@
+QString filename = "Data.txt";
+QFile file(filename);
+if (file.open(QIODevice::ReadWrite)) {
+    QTextStream stream(&file);
+    stream << "something" << endl;
+}

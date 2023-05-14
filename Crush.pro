@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    BasicXMLSyntaxHighlighter.cpp \
     app.cpp \
     commandui.cpp \
     constants.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
     utils.cpp
 
 HEADERS += \
+    BasicXMLSyntaxHighlighter.h \
     app.h \
     commandui.h \
     constants.h \
@@ -40,4 +42,5 @@ RESOURCES += \
 
 DISTFILES += \
     README.md \
-    gosh.xml
+    gosh.xml \
+    scratch

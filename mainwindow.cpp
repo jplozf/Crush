@@ -6,9 +6,13 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainWindow) {
     ui->setupUi(this);
     app = new App();
+    dirtyFlag = false;
 
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(slotDoExit()));
     connect(ui->cbxCommands,SIGNAL(currentIndexChanged(const QString)),this,SLOT(slotSelectCommand(const QString)));
+    connect(ui->btnEditXML, SIGNAL(clicked()), this, SLOT(slotDoEditXML()));
+    connect(ui->txtEditXML, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPosition()));
+    connect(ui->btnSaveXML, SIGNAL(clicked()), this, SLOT(slotDoSaveXML()));
 
     readSettings();
     if (openXMLFile()) {
@@ -17,8 +21,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     } else {
         showMessage("No XML file found", 0);
     }
+    initUI();
     QString appTitle = QString("%1 %2").arg(app->appConstants->getQString("APPLICATION_NAME"), app->appConstants->getQString("VERSION"));
     setWindowTitle(appTitle);
+
+    QTimer::singleShot(500, this, &MainWindow::setDelayed);
 }
 
 //******************************************************************************
@@ -27,6 +34,67 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
 MainWindow::~MainWindow() {
     delete ui;
 }
+
+//******************************************************************************
+// setDelayed()
+//******************************************************************************
+void MainWindow::setDelayed() {
+    connect(ui->txtEditXML, SIGNAL(textChanged()), this, SLOT(slotTextChanged()));
+}
+
+//******************************************************************************
+// initUI()
+//******************************************************************************
+void MainWindow::initUI() {
+    QFont font;
+    font.setFamily("Consolas");
+    font.setStyleHint(QFont::Monospace);
+    font.setFixedPitch(true);
+    font.setPointSize(10);
+
+    struct TextFormat textFormats[5] = {
+        {Qt::blue, QFont::Bold, false},
+        {Qt::darkMagenta, QFont::Bold, false},
+        {Qt::darkBlue, QFont::Bold, true},
+        {Qt::darkRed, QFont::Normal, false},
+        {Qt::gray, QFont::Normal, false}
+    };
+
+    textFormats[0].foreground = app->appSettings->get("XML_KEYWORD_COLOR").value<QColor>();
+    textFormats[0].weight = app->appSettings->get("XML_KEYWORD_WEIGHT").toInt();
+    textFormats[0].italic = app->appSettings->get("XML_KEYWORD_ITALIC").toBool();
+    textFormats[1].foreground = app->appSettings->get("XML_ELEMENT_COLOR").value<QColor>();
+    textFormats[1].weight = app->appSettings->get("XML_ELEMENT_WEIGHT").toInt();
+    textFormats[1].italic = app->appSettings->get("XML_ELEMENT_ITALIC").toBool();
+    textFormats[2].foreground = app->appSettings->get("XML_ATTRIBUTE_COLOR").value<QColor>();
+    textFormats[2].weight = app->appSettings->get("XML_ATTRIBUTE_WEIGHT").toInt();
+    textFormats[2].italic = app->appSettings->get("XML_ATTRIBUTE_ITALIC").toBool();
+    textFormats[3].foreground = app->appSettings->get("XML_VALUE_COLOR").value<QColor>();
+    textFormats[3].weight = app->appSettings->get("XML_VALUE_WEIGHT").toInt();
+    textFormats[3].italic = app->appSettings->get("XML_VALUE_ITALIC").toBool();
+    textFormats[4].foreground = app->appSettings->get("XML_COMMENT_COLOR").value<QColor>();
+    textFormats[4].weight = app->appSettings->get("XML_KEYWORD_WEIGHT").toInt();
+    textFormats[4].italic = app->appSettings->get("XML_COMMENT_WEIGHT").toBool();
+
+    // QTextEdit* editor = new QTextEdit();
+    ui->txtEditXML->setFont(font);
+
+    const int tabStop = app->appSettings->get("XML_TAB_STOP").toInt();
+
+    QFontMetrics metrics(font);
+    ui->txtEditXML->setTabStopWidth(tabStop * metrics.width(' '));
+    highlighter = new BasicXMLSyntaxHighlighter(ui->txtEditXML->document());
+    highlighter->setFormats(textFormats);
+    Q_UNUSED(highlighter);
+    ui->txtEditXML->setReadOnly(true);
+    ui->txtEditXML->show();
+
+    ui->lblDirtyFlag->setText("locked");
+    ui->btnSaveXML->setEnabled(false);
+
+    app->appSettings->form(ui->boxSettings);
+}
+
 
 //******************************************************************************
 // selectCommand()
@@ -55,6 +123,62 @@ void MainWindow::slotDoExit() {
 }
 
 //******************************************************************************
+// slotDoEditXML()
+//******************************************************************************
+void MainWindow::slotDoEditXML() {
+    if (ui->txtEditXML->isReadOnly()) {
+        ui->lblDirtyFlag->setText("editing");
+        ui->txtEditXML->setReadOnly(false);
+        ui->txtEditXML->show();
+        showMessage("Editing XML");
+    } else {
+        ui->lblDirtyFlag->setText("locked");
+        ui->txtEditXML->setReadOnly(true);
+        ui->txtEditXML->show();
+        showMessage("Locking XML");
+    }
+}
+
+//******************************************************************************
+// slotCursorPosition()
+//******************************************************************************
+void MainWindow::slotCursorPosition() {
+    int line(ui->txtEditXML->textCursor().blockNumber() + 1);
+    int col(ui->txtEditXML->textCursor().columnNumber() + 1);
+    ui->lblColumnCursor->setText(QString::number(col));
+    ui->lblLineCursor->setText(QString::number(line));
+}
+
+//******************************************************************************
+// slotTextChanged()
+//******************************************************************************
+void MainWindow::slotTextChanged() {
+    dirtyFlag = true;
+    ui->lblDirtyFlag->setText("*modified*");
+    ui->btnSaveXML->setEnabled(true);
+}
+
+//******************************************************************************
+// slotDoSaveXML()
+//******************************************************************************
+void MainWindow::slotDoSaveXML() {
+    QFile f(this->fName);
+    if (f.open(QIODevice::Text | QIODevice::ReadWrite )) {
+        QTextStream stream(&f);
+        stream << ui->txtEditXML->document()->toPlainText() << endl;
+        f.close();
+        xmlCommands.setContent(&f);
+        populateCommandsList();
+        dirtyFlag = false;
+        ui->lblDirtyFlag->setText("*saved*");
+        ui->btnSaveXML->setEnabled(false);
+        showMessage("XML file saved");
+    } else {
+        showMessage("Can't save XML file");
+    }
+}
+
+//******************************************************************************
 // closeEvent()
 //******************************************************************************
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -79,6 +203,7 @@ void MainWindow::saveSettings() {
     registry.setValue("geometry", saveGeometry());
     registry.setValue("windowState", saveState());
     registry.setValue("splitter", ui->splitter->saveState());
+    registry.setValue("tab", ui->tabWidget->currentIndex());
 
     //**************************************************************************
     // Settings saving
@@ -111,6 +236,9 @@ void MainWindow::readSettings() {
     if (!splitter.isEmpty()) {
         ui->splitter->restoreState(registry.value("splitter").toByteArray());
     }
+
+    const int tabIndex = registry.value("tab", 0).toInt();
+    ui->tabWidget->setCurrentIndex(tabIndex);
 }
 
 //******************************************************************************
@@ -178,16 +306,25 @@ void MainWindow::buildCommandScreen(QString cmd) {
 //******************************************************************************
 bool MainWindow::openXMLFile(QString fName) {
     bool rc(false);
+    ui->txtEditXML->blockSignals(true);
     if (fName == "*DEFAULT") {
         fName = Utils::pathAppend(app->appDir, QString::fromUtf8(app->appConstants->getString("COMMANDS_FILE").c_str()));
     }
     this->fName = fName;
     QFile f(fName);
-    if (f.open(QIODevice::ReadOnly )) {
+    if (f.open(QIODevice::Text | QIODevice::ReadOnly )) {
         xmlCommands.setContent(&f);
+
+        QString content;
+        f.seek(0);
+        while(!f.atEnd())
+            content.append(f.readLine());
+        ui->txtEditXML->setPlainText(content);
+
         f.close();
         rc = true;
     }
+    ui->txtEditXML->blockSignals(false);
     return rc;
 }
 
