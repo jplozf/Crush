@@ -13,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     connect(ui->btnEditXML, SIGNAL(clicked()), this, SLOT(slotDoEditXML()));
     connect(ui->txtEditXML, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPosition()));
     connect(ui->btnSaveXML, SIGNAL(clicked()), this, SLOT(slotDoSaveXML()));
+    QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_F3), this);
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(slotRunCommand()));
+    connect(ui->btnEnter, SIGNAL(clicked()), this, SLOT(slotRunCommand()));
 
     readSettings();
     if (openXMLFile()) {
@@ -176,6 +179,13 @@ void MainWindow::slotDoSaveXML() {
     } else {
         showMessage("Can't save XML file");
     }
+}
+
+//******************************************************************************
+// slotRunCommand()
+//******************************************************************************
+void MainWindow::slotRunCommand() {
+    qDebug() << "RUNME";
 }
 
 //******************************************************************************

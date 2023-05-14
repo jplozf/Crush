@@ -8,6 +8,7 @@
 #include <QCloseEvent>
 #include <QDesktopWidget>
 #include <QTimer>
+#include <QShortcut>
 
 #include "qobjectdefs.h"
 #include "ui_mainwindow.h"
@@ -52,6 +53,7 @@ private slots:
     void slotCursorPosition();
     void slotTextChanged();
     void slotDoSaveXML();
+    void slotRunCommand();
 
 };
 #endif // MAINWINDOW_H
