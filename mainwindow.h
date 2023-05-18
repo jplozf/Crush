@@ -16,6 +16,7 @@
 #include "utils.h"
 #include "commandui.h"
 #include "BasicXMLSyntaxHighlighter.h"
+#include "XeqProcess.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -45,6 +46,11 @@ private:
     QString fName;
     BasicXMLSyntaxHighlighter *highlighter ;
     void setDelayed();
+    XeqProcess *xp;
+    CommandUI *cUI;
+    bool eventFilter(QObject *watched, QEvent *event);
+    QList<QString> aCommands;
+    int iCommands;
 
 private slots:
     void slotSelectCommand(const QString);

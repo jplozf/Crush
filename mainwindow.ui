@@ -166,7 +166,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>360</width>
+                <width>369</width>
                 <height>249</height>
                </rect>
               </property>
@@ -183,7 +183,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tabConsoleOut">
            <property name="cursor">
@@ -204,6 +204,9 @@
               <property name="styleSheet">
                <string notr="true">background-color: rgb(255, 246, 237);
 color: rgb(0, 0, 127);</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
               <property name="html">
                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -247,7 +250,7 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>471</width>
+                 <width>462</width>
                  <height>302</height>
                 </rect>
                </property>

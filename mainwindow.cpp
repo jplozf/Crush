@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     ui->setupUi(this);
     app = new App();
     dirtyFlag = false;
+    iCommands = 0;
 
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(slotDoExit()));
     connect(ui->cbxCommands,SIGNAL(currentIndexChanged(const QString)),this,SLOT(slotSelectCommand(const QString)));
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_F3), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(slotRunCommand()));
     connect(ui->btnEnter, SIGNAL(clicked()), this, SLOT(slotRunCommand()));
+    ui->txtCommand->installEventFilter(this);
 
     readSettings();
     if (openXMLFile()) {
@@ -36,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
 //******************************************************************************
 MainWindow::~MainWindow() {
     delete ui;
+    delete xp;
+    delete cUI;
 }
 
 //******************************************************************************
@@ -79,8 +83,8 @@ void MainWindow::initUI() {
     textFormats[4].weight = app->appSettings->get("XML_KEYWORD_WEIGHT").toInt();
     textFormats[4].italic = app->appSettings->get("XML_COMMENT_WEIGHT").toBool();
 
-    // QTextEdit* editor = new QTextEdit();
     ui->txtEditXML->setFont(font);
+    ui->txtConsoleOut->setStyleSheet("background-color: " + this->app->appSettings->get("CONSOLE_BACKGROUND").value<QColor>().name() + ";");
 
     const int tabStop = app->appSettings->get("XML_TAB_STOP").toInt();
 
@@ -105,7 +109,7 @@ void MainWindow::initUI() {
 void MainWindow::slotSelectCommand(const QString cmd) {
     // buildCommandScreen(cmd);
     // cUI.CommandsUI(os.path.join(self.appDir, const.COMMANDS_FILE), self.cbxCommands.currentText(), self)
-    CommandUI *cUI = new CommandUI(fName, cmd, ui, app);
+    cUI = new CommandUI(fName, cmd, ui, app);
 }
 
 //******************************************************************************
@@ -122,6 +126,8 @@ void MainWindow::showMessage(const QString &message, int timeout) {
 // slotDoExit()
 //******************************************************************************
 void MainWindow::slotDoExit() {
+    if (xp)
+        xp->killMe();
     this->close();
 }
 
@@ -186,6 +192,52 @@ void MainWindow::slotDoSaveXML() {
 //******************************************************************************
 void MainWindow::slotRunCommand() {
     qDebug() << "RUNME";
+    QStringList args = this->ui->txtCommand->text().split(" ");
+    QString pgm = args.first();
+    args.removeFirst();
+    xp = new XeqProcess(pgm, args, app, ui);
+    this->ui->txtCommand->selectAll();
+    this->aCommands.append(this->ui->txtCommand->text());
+    this->iCommands = this->aCommands.count() - 1;
+}
+
+//******************************************************************************
+// eventFilter()
+//******************************************************************************
+bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
+    if (watched == ui->txtCommand) {
+        if (event->type() == QKeyEvent::KeyPress) {
+            QKeyEvent * ke = static_cast<QKeyEvent*>(event);
+            if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+                slotRunCommand();
+                return true; // do not process this event further
+            }
+            if (ke->key() == Qt::Key_Down) {
+                if (this->iCommands > 0) {
+                    this->iCommands--;
+                    this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                } else {
+                    this->iCommands = this->aCommands.count() - 1;
+                    this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                }
+                return true; // do not process this event further
+            }
+            if (ke->key() == Qt::Key_Up) {
+                if (this->iCommands < this->aCommands.count() - 1) {
+                    this->iCommands++;
+                    this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                } else {
+                    this->iCommands = 0;
+                    this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                }
+                return true; // do not process this event further
+            }
+        }
+        return false; // process this event further
+    } else {
+        // pass the event on to the parent class
+        return QMainWindow::eventFilter(watched, event);
+    }
 }
 
 //******************************************************************************

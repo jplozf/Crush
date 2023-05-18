@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     BasicXMLSyntaxHighlighter.cpp \
+    XeqProcess.cpp \
     app.cpp \
     commandui.cpp \
     constants.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 
 HEADERS += \
     BasicXMLSyntaxHighlighter.h \
+    XeqProcess.h \
     app.h \
     commandui.h \
     constants.h \
