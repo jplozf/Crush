@@ -192,6 +192,7 @@ void MainWindow::slotDoSaveXML() {
 //******************************************************************************
 void MainWindow::slotRunCommand() {
     qDebug() << "RUNME";
+    this->ui->lblTitle->setText(this->ui->txtCommand->text());
     QStringList args = this->ui->txtCommand->text().split(" ");
     QString pgm = args.first();
     args.removeFirst();
@@ -199,6 +200,8 @@ void MainWindow::slotRunCommand() {
     this->ui->txtCommand->selectAll();
     this->aCommands.append(this->ui->txtCommand->text());
     this->iCommands = this->aCommands.count() - 1;
+    this->ui->tabWidget->setCurrentIndex(0);
+    this->ui->txtCommand->setFocus();
 }
 
 //******************************************************************************

@@ -223,6 +223,7 @@ p, li { white-space: pre-wrap; }
                <font>
                 <family>Courier</family>
                 <pointsize>12</pointsize>
+                <bold>true</bold>
                </font>
               </property>
               <property name="frameShape">
@@ -230,6 +231,9 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="text">
                <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
