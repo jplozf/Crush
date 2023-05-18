@@ -10,10 +10,10 @@ Settings::Settings()
 #else
 #endif
     defaults["CONSOLE_PROMPT"] = QVariant("Gosh >>> ");
-    defaults["CONSOLE_BACKGROUND"] = QVariant("#ffffff");
-    defaults["CONSOLE_OUT_COLOR"] = QVariant("#000000");
-    defaults["CONSOLE_ERR_COLOR"] = QVariant("#00ffff");
-    defaults["CONSOLE_PROMPT_COLOR"] = QVariant("#ffff00");
+    defaults["CONSOLE_BACKGROUND"] = QVariant("white");
+    defaults["CONSOLE_OUT_COLOR"] = QVariant("black");
+    defaults["CONSOLE_ERR_COLOR"] = QVariant("red");
+    defaults["CONSOLE_PROMPT_COLOR"] = QVariant("blue");
     defaults["CONSOLE_FONT_FAMILY"] = QVariant("Courier");
     defaults["CONSOLE_FONT_SIZE"] = QVariant("8");
     defaults["CONSOLE_FONT_STYLE"] = QVariant("normal");
