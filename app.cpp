@@ -6,6 +6,7 @@
 App::App() {
     appSettings = new Settings();
     appConstants = new Constants();
+    processRunning = false;
 
     //**************************************************************************
     // Create application folder if not exists, and...

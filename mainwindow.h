@@ -9,6 +9,7 @@
 #include <QDesktopWidget>
 #include <QTimer>
 #include <QShortcut>
+#include <QHash>
 
 #include "qobjectdefs.h"
 #include "ui_mainwindow.h"
@@ -36,6 +37,7 @@ public:
     void initUI();
     bool dirtyFlag;
 
+
 private:
     Ui::MainWindow *ui;
     void populateCommandsList();
@@ -51,6 +53,9 @@ private:
     bool eventFilter(QObject *watched, QEvent *event);
     QList<QString> aCommands;
     int iCommands;
+    QLabel *lblRC;
+    QLabel *lblTimeElpased;
+    QLabel *lblLED;
 
 private slots:
     void slotSelectCommand(const QString);

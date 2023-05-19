@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     setWindowTitle(appTitle);
 
     QTimer::singleShot(500, this, &MainWindow::setDelayed);
+    qDebug() << qVersion();
 }
 
 //******************************************************************************
@@ -100,6 +101,24 @@ void MainWindow::initUI() {
     ui->btnSaveXML->setEnabled(false);
 
     app->appSettings->form(ui->boxSettings);
+
+    lblRC = new QLabel("RC=0", this);
+    lblRC->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    lblRC->setObjectName("lblRC");
+    lblRC->setFont(QFont("Courier"));
+    ui->statusBar->addPermanentWidget(lblRC, 0);
+
+    lblTimeElpased = new QLabel("------ ms", this);
+    lblTimeElpased->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    lblTimeElpased->setObjectName("lblTimeElpased");
+    lblTimeElpased->setFont(QFont("Courier"));
+    ui->statusBar->addPermanentWidget(lblTimeElpased, 0);
+
+    lblLED = new QLabel(this);
+    lblLED->setPixmap(QPixmap(":/led_green.png"));
+    // lblLED->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    lblLED->setObjectName("lblLED");
+    ui->statusBar->addPermanentWidget(lblLED, 0);
 }
 
 
@@ -192,13 +211,24 @@ void MainWindow::slotDoSaveXML() {
 //******************************************************************************
 void MainWindow::slotRunCommand() {
     qDebug() << "RUNME";
-    this->ui->lblTitle->setText(this->ui->txtCommand->text());
-    QStringList args = this->ui->txtCommand->text().split(" ");
-    QString pgm = args.first();
-    args.removeFirst();
-    xp = new XeqProcess(pgm, args, app, ui);
+    QString cmd = this->ui->txtCommand->text();
+    if (cmd.startsWith("!")) {
+        if (cmd == "!BREAK") {
+            if (xp)
+                xp->killMe();
+        }
+        if (cmd == "!QUIT") {
+            this->close();
+        }
+    } else {
+        this->ui->lblTitle->setText(cmd);
+        QStringList args = cmd.split(" ");
+        QString pgm = args.first();
+        args.removeFirst();
+        xp = new XeqProcess(pgm, args, app, ui);
+    }
     this->ui->txtCommand->selectAll();
-    this->aCommands.append(this->ui->txtCommand->text());
+    this->aCommands.append(cmd);
     this->iCommands = this->aCommands.count() - 1;
     this->ui->tabWidget->setCurrentIndex(0);
     this->ui->txtCommand->setFocus();

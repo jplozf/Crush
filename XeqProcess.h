@@ -5,6 +5,7 @@
 #include <QProcess>
 #include <QDebug>
 #include <QTextEdit>
+#include <QTime>
 #include "app.h"
 
 QT_BEGIN_NAMESPACE
@@ -24,11 +25,13 @@ private:
     QTextEdit *errWidget;
     App *app;
     Ui::MainWindow *ui;
+    QTime t;
 
 private slots:
     void readyReadStandardOutput();
     void readyReadStandardError();
-
+    void finished(int exitCode, QProcess::ExitStatus exitStatus);
+    void errorOccurred(QProcess::ProcessError error);
 };
 
 #endif // XEQPROCESS_H

@@ -16,6 +16,7 @@ public:
     Settings *appSettings;
     Constants *appConstants;
     QVector<QString> mruProjects;
+    bool processRunning;
 };
 
 #endif // APP_H
