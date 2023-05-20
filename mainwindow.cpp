@@ -213,12 +213,27 @@ void MainWindow::slotRunCommand() {
     qDebug() << "RUNME";
     QString cmd = this->ui->txtCommand->text();
     if (cmd.startsWith("!")) {
-        if (cmd == "!BREAK") {
+        if (cmd.toUpper() == "!BREAK") {
             if (xp)
                 xp->killMe();
         }
-        if (cmd == "!QUIT") {
+        if (cmd.toUpper() == "!QUIT") {
             this->close();
+        }
+        if (cmd.toUpper() == "!CLS") {
+            this->ui->txtConsoleOut->setText("");
+            if (this->app->processRunning == false) {
+                this->ui->lblTitle->setText("");
+
+                QLabel *lblRC = this->ui->statusBar->findChild<QLabel*>("lblRC");
+                lblRC->setText("RC=0");
+
+                QLabel *lblLED = this->ui->statusBar->findChild<QLabel*>("lblLED");
+                lblLED->setPixmap(QPixmap(":/led_green.png"));
+
+                QLabel *lblTimeElpased = this->ui->statusBar->findChild<QLabel*>("lblTimeElpased");
+                lblTimeElpased->setText("000000 ms");
+            }
         }
     } else {
         this->ui->lblTitle->setText(cmd);
