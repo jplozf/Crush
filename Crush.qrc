@@ -174,5 +174,6 @@
         <file>16x16/Zoom Out.png</file>
         <file>led_green.png</file>
         <file>led_red.png</file>
+        <file>help.html</file>
     </qresource>
 </RCC>

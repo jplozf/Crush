@@ -189,6 +189,10 @@
            <property name="cursor">
             <cursorShape>CrossCursor</cursorShape>
            </property>
+           <attribute name="icon">
+            <iconset resource="Crush.qrc">
+             <normaloff>:/16x16/Computer.png</normaloff>:/16x16/Computer.png</iconset>
+           </attribute>
            <attribute name="title">
             <string>Console Out</string>
            </attribute>
@@ -233,13 +237,17 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
               <property name="alignment">
-               <set>Qt::AlignCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
            </layout>
           </widget>
           <widget class="QWidget" name="tabSettings">
+           <attribute name="icon">
+            <iconset resource="Crush.qrc">
+             <normaloff>:/16x16/Gear.png</normaloff>:/16x16/Gear.png</iconset>
+           </attribute>
            <attribute name="title">
             <string>Settings</string>
            </attribute>
@@ -255,7 +263,7 @@ p, li { white-space: pre-wrap; }
                  <x>0</x>
                  <y>0</y>
                  <width>462</width>
-                 <height>302</height>
+                 <height>300</height>
                 </rect>
                </property>
               </widget>
@@ -264,6 +272,10 @@ p, li { white-space: pre-wrap; }
            </layout>
           </widget>
           <widget class="QWidget" name="tabXMLFile">
+           <attribute name="icon">
+            <iconset resource="Crush.qrc">
+             <normaloff>:/16x16/Document Text.png</normaloff>:/16x16/Document Text.png</iconset>
+           </attribute>
            <attribute name="title">
             <string>Commands</string>
            </attribute>
@@ -397,19 +409,18 @@ p, li { white-space: pre-wrap; }
            </layout>
           </widget>
           <widget class="QWidget" name="tabHelp">
+           <attribute name="icon">
+            <iconset resource="Crush.qrc">
+             <normaloff>:/16x16/Info2.png</normaloff>:/16x16/Info2.png</iconset>
+           </attribute>
            <attribute name="title">
             <string>Help</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_6">
             <item row="0" column="0">
-             <widget class="QTextEdit" name="txtHelp"/>
+             <widget class="QTextBrowser" name="txtHelp"/>
             </item>
            </layout>
-          </widget>
-          <widget class="QWidget" name="tab">
-           <attribute name="title">
-            <string>Page</string>
-           </attribute>
           </widget>
          </widget>
         </item>

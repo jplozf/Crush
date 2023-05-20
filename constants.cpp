@@ -23,6 +23,8 @@ Constants::Constants()
     constants["XML_SUBFOLDER"]          = std::string("xml/");
 
     constants["NOT_AVAILABLE_LABEL"]    = std::string("NOT_AVAILABLE_LABEL");
+
+    this->helpText = setHelp();
 }
 
 //******************************************************************************
@@ -52,6 +54,43 @@ std::string Constants::getString(std::string param) {
 QString Constants::getQString(std::string param) {
     std::string t = std::any_cast<std::string>(this->constants[param]);
     return (QString::fromUtf8(t.c_str()));
+}
+
+//******************************************************************************
+// setHelp()
+//******************************************************************************
+QString Constants::setHelp() {
+    QString str(
+        "<!DOCTYPE html"
+        "<html>"
+        "<head>"
+        "<title>Help</title>"
+        "</head>"
+        "<body>"
+        "<h2 id=\"commands-available\">Commands available</h2>"
+        "<p>Here are some built-in commands available for general purpose. These commands are all introducing by ! character.</p>"
+        "<ul>"
+        "<li><strong>!BREAK</strong></li>"
+        "</ul>"
+        "<blockquote>"
+        "<p>Stops the current running command.</p>"
+        "</blockquote>"
+        "<ul>"
+        "<li><strong>!CLS</strong></li>"
+        "</ul>"
+        "<blockquote>"
+        "<p>Clear the console.</p>"
+        "</blockquote>"
+        "<ul>"
+        "<li><strong>!QUIT</strong></li>"
+        "</ul>"
+        "<blockquote>"
+        "<p>Exit the Crush program. The same action as F10 key.</p>"
+        "</blockquote>"
+        "</body>"
+        "</html>"
+    );
+    return str;
 }
 
 

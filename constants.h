@@ -17,6 +17,10 @@ public:
     bool getBool(std::string param);
     QString getQString(std::string param);
     std::string getString(std::string param);
+    QString helpText;
+
+private:
+    QString setHelp();
 };
 
 #endif // CONSTANTS_H

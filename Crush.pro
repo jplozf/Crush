@@ -43,6 +43,7 @@ RESOURCES += \
     Crush.qrc
 
 DISTFILES += \
+    LICENSE.md \
     README.md \
     gosh.xml \
     scratch

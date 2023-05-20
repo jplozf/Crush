@@ -54,6 +54,9 @@ void MainWindow::setDelayed() {
 // initUI()
 //******************************************************************************
 void MainWindow::initUI() {
+    //**************************************************************************
+    // Commands Editor's settings
+    //**************************************************************************
     QFont font;
     font.setFamily("Consolas");
     font.setStyleHint(QFont::Monospace);
@@ -100,8 +103,14 @@ void MainWindow::initUI() {
     ui->lblDirtyFlag->setText("locked");
     ui->btnSaveXML->setEnabled(false);
 
+    //**************************************************************************
+    // Settings Form
+    //**************************************************************************
     app->appSettings->form(ui->boxSettings);
 
+    //**************************************************************************
+    // StatusBar
+    //**************************************************************************
     lblRC = new QLabel("RC=0", this);
     lblRC->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     lblRC->setObjectName("lblRC");
@@ -116,9 +125,17 @@ void MainWindow::initUI() {
 
     lblLED = new QLabel(this);
     lblLED->setPixmap(QPixmap(":/led_green.png"));
-    // lblLED->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     lblLED->setObjectName("lblLED");
     ui->statusBar->addPermanentWidget(lblLED, 0);
+
+    //**************************************************************************
+    // Help tab
+    //**************************************************************************
+    QFile file(":/help.html");
+    file.open(QFile::ReadOnly | QFile::Text);
+    QTextStream stream(&file);
+    ui->txtHelp->setHtml(stream.readAll());
+    // ui->txtHelp->setHtml(app->appConstants->helpText);
 }
 
 
@@ -236,6 +253,9 @@ void MainWindow::slotRunCommand() {
             }
         }
     } else {
+        if (this->ui->chkClearConsole->isChecked()) {
+            this->ui->txtConsoleOut->setText("");
+        }
         this->ui->lblTitle->setText(cmd);
         QStringList args = cmd.split(" ");
         QString pgm = args.first();
