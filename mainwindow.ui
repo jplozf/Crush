@@ -422,6 +422,20 @@ p, li { white-space: pre-wrap; }
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tabAbout">
+           <attribute name="icon">
+            <iconset resource="Crush.qrc">
+             <normaloff>:/16x16/Copyright.png</normaloff>:/16x16/Copyright.png</iconset>
+           </attribute>
+           <attribute name="title">
+            <string>About</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0">
+             <widget class="QTextBrowser" name="txtAbout"/>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>

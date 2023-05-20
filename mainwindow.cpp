@@ -136,6 +136,11 @@ void MainWindow::initUI() {
     QTextStream stream(&file);
     ui->txtHelp->setHtml(stream.readAll());
     // ui->txtHelp->setHtml(app->appConstants->helpText);
+
+    //**************************************************************************
+    // About tab
+    //**************************************************************************
+    ui->txtAbout->setHtml(app->appConstants->aboutText);
 }
 
 
@@ -338,6 +343,7 @@ void MainWindow::saveSettings() {
     registry.setValue("windowState", saveState());
     registry.setValue("splitter", ui->splitter->saveState());
     registry.setValue("tab", ui->tabWidget->currentIndex());
+    registry.setValue("clearConsole", ui->chkClearConsole->isChecked());
 
     //**************************************************************************
     // History saving
@@ -386,6 +392,9 @@ void MainWindow::readSettings() {
 
     const int tabIndex = registry.value("tab", 0).toInt();
     ui->tabWidget->setCurrentIndex(tabIndex);
+
+    const int clearConsole = registry.value("clearConsole", false).toBool();
+    ui->chkClearConsole->setChecked(clearConsole);
 
     //**************************************************************************
     // History restoring
