@@ -246,22 +246,26 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
                 return true; // do not process this event further
             }
             if (ke->key() == Qt::Key_Down) {
-                if (this->iCommands > 0) {
-                    this->iCommands--;
-                    this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
-                } else {
-                    this->iCommands = this->aCommands.count() - 1;
-                    this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                if (!aCommands.isEmpty()) {
+                    if (this->iCommands > 0) {
+                        this->iCommands--;
+                        this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                    } else {
+                        this->iCommands = this->aCommands.count() - 1;
+                        this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                    }
                 }
                 return true; // do not process this event further
             }
             if (ke->key() == Qt::Key_Up) {
-                if (this->iCommands < this->aCommands.count() - 1) {
-                    this->iCommands++;
-                    this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
-                } else {
-                    this->iCommands = 0;
-                    this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                if (!aCommands.isEmpty()) {
+                    if (this->iCommands < this->aCommands.count() - 1) {
+                        this->iCommands++;
+                        this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                    } else {
+                        this->iCommands = 0;
+                        this->ui->txtCommand->setText(this->aCommands.at(this->iCommands));
+                    }
                 }
                 return true; // do not process this event further
             }
@@ -301,6 +305,19 @@ void MainWindow::saveSettings() {
     registry.setValue("tab", ui->tabWidget->currentIndex());
 
     //**************************************************************************
+    // History saving
+    //**************************************************************************
+    QListIterator<QString> itCommands(aCommands);
+    int jCommands(0);
+    registry.beginWriteArray("History");
+    while (itCommands.hasNext()) {
+      QString project = itCommands.next();
+      registry.setArrayIndex(jCommands++);
+      registry.setValue("History", project);
+    }
+    registry.endArray();
+
+    //**************************************************************************
     // Settings saving
     //**************************************************************************
     Settings mySettings;
@@ -334,6 +351,16 @@ void MainWindow::readSettings() {
 
     const int tabIndex = registry.value("tab", 0).toInt();
     ui->tabWidget->setCurrentIndex(tabIndex);
+
+    //**************************************************************************
+    // History restoring
+    //**************************************************************************
+    int sizeHistory = registry.beginReadArray("History");
+    for (int i = 0; i < sizeHistory; ++i) {
+        registry.setArrayIndex(i);
+        aCommands.append(registry.value("History").toString());
+    }
+    registry.endArray();
 }
 
 //******************************************************************************
