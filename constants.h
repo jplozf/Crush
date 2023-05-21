@@ -7,6 +7,9 @@
 #include <iostream>
 #include <vector>
 #include <QString>
+#include <QSysInfo>
+
+#include <utils.h>
 
 class Constants
 {

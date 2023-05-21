@@ -31,7 +31,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     setWindowTitle(appTitle);
 
     QTimer::singleShot(500, this, &MainWindow::setDelayed);
-    qDebug() << qVersion();
 }
 
 //******************************************************************************

@@ -98,36 +98,35 @@ QString Constants::setHelp() {
 // setAbout()
 //******************************************************************************
 QString Constants::setAbout() {
-    QString str(
+    QString str;
+    str = QString(
         "<!DOCTYPE html"
         "<html>"
         "<head>"
         "<title>About</title>"
         "</head>"
         "<body>"
-        "<h2 id=\"commands-available\">Commands available</h2>"
-        "<p>Here are some built-in commands available for general purpose. These commands are all introducing by ! character.</p>"
-        "<ul>"
-        "<li><strong>!BREAK</strong></li>"
-        "</ul>"
+        "<h2 id=\"crush\">%1 v%2</h2>"
+        "<hr>"
         "<blockquote>"
-        "<p>Stops the current running command.</p>"
-        "</blockquote>"
-        "<ul>"
-        "<li><strong>!CLS</strong></li>"
-        "</ul>"
-        "<blockquote>"
-        "<p>Clear the console.</p>"
-        "</blockquote>"
-        "<ul>"
-        "<li><strong>!QUIT</strong></li>"
-        "</ul>"
-        "<blockquote>"
-        "<p>Exit the Crush program. The same action as F10 key.</p>"
-        "</blockquote>"
-        "</body>"
-        "</html>"
-    );
+        "<table>"
+        "<tbody>").arg(this->getQString("APPLICATION_NAME"), this->getQString("VERSION"));
+
+    QMap<QString, QString> props = Utils::systemProperties();
+    for (auto iter = props.constBegin(); iter != props.constEnd(); ++iter) {
+        // cout << iter.key() << ": " << iter.value() << endl;
+        str += QString("<tr><td align=\"left\"><strong>%1</strong></td>"
+               "<td align=\"right\">%2</td>"
+               "</tr>").arg(iter.key(), iter.value());
+    }
+
+    str += QString("</tbody></table>"
+           "</blockquote>"
+           "<hr>"
+           "<p><center><em>%1</em></center></p>"
+           "</body>"
+           "</html>").arg(this->getQString("COPYRIGHT"));
+
     return str;
 }
 

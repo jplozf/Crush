@@ -14,6 +14,7 @@
 #include <QSaveFile>
 #include <QDebug>
 #include <QDirIterator>
+#include <QSysInfo>
 
 
 class Utils
@@ -22,6 +23,7 @@ public:
     static qint64 dirSize(QString dirPath);
     static QString formatSize(qint64 size);
     static QMap<QString, QString> fileProperties(QString f);
+    static QMap<QString, QString> systemProperties();
     static QByteArray fileChecksum(const QString &fileName, QCryptographicHash::Algorithm hashAlgorithm);
     static QString capitalize(const QString &str);
     static QString pathAppend(const QString& path1, const QString& path2);

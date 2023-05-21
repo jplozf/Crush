@@ -63,6 +63,22 @@ QMap<QString, QString> Utils::fileProperties(QString f) {
 }
 
 //******************************************************************************
+// systemProperties()
+//******************************************************************************
+QMap<QString, QString> Utils::systemProperties() {
+    QMap<QString, QString> props;
+
+    props.insert("CPU Architecture", QSysInfo::currentCpuArchitecture());
+    props.insert("Product Type", QSysInfo::prettyProductName());
+    props.insert("Kernel Type", QSysInfo::kernelType());
+    props.insert("Kernel Version", QSysInfo::kernelVersion());
+    props.insert("Machine ID", QSysInfo::machineHostName());
+    props.insert("Qt Version", qVersion());
+
+    return props;
+}
+
+//******************************************************************************
 // fileChecksum()
 //******************************************************************************
 QByteArray Utils::fileChecksum(const QString &fileName, QCryptographicHash::Algorithm hashAlgorithm) {

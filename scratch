@@ -1,36 +1,6 @@
-QString filename = "Data.txt";
-QFile file(filename);
-if (file.open(QIODevice::ReadWrite)) {
-    QTextStream stream(&file);
-    stream << "something" << endl;
-}
-
-//**************************************************************************
-// MRU Projects saving
-//**************************************************************************
-QVectorIterator<QString> iProjects(mruProjects);
-int jProjects(0);
-int cProjects(0);
-int mProjetcs(app->appSettings->get("MRU_PROJECTS").toInt());
-int eProjects(mruProjects.length());
-qDebug() << eProjects;
-registry.beginWriteArray("Projects");
-while (iProjects.hasNext()) {
-  QString project = iProjects.next();
-  if ((eProjects - cProjects) <= mProjetcs) {
-      registry.setArrayIndex(jProjects++);
-      registry.setValue("Project", project);
-  }
-  cProjects++;
-}
-registry.endArray();
-
-//**************************************************************************
-// MRU Projects restoring
-//**************************************************************************
-int sizeProjects = registry.beginReadArray("Projects");
-for (int i = 0; i < sizeProjects; ++i) {
-    registry.setArrayIndex(i);
-    mruProjects.append(registry.value("Project").toString());
-}
-registry.endArray();
+cout << "CPU Architecture : " << QSysInfo::currentCpuArchitecture().toLocal8Bit().constData() << endl;
+cout << "Product Type : " << QSysInfo::prettyProductName().toLocal8Bit().constData() << endl;
+cout << "Kernel Type : " << QSysInfo::kernelType().toLocal8Bit().constData() << endl;
+cout << "Kernel Version : " << QSysInfo::kernelVersion().toLocal8Bit().constData() << endl;
+cout << "Machine ID : " << QSysInfo::machineHostName().toLocal8Bit().constData() << endl;
+cout << "-----------------------------------------------------------------" << endl;
