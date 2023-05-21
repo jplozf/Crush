@@ -87,6 +87,11 @@ void XeqProcess::errorOccurred(QProcess::ProcessError error) {
 
     QLabel *lblPID = this->ui->statusBar->findChild<QLabel*>("lblPID");
     lblPID->setText("                    ");
+
+    if (this->ui->chkNotification->isChecked()) {
+        system("notify-send \"Crush\" \"Command completed in error.\"");
+        qDebug() << "NOTIFICATION";
+    }
 }
 
 //******************************************************************************
@@ -109,6 +114,11 @@ void XeqProcess::finished(int exitCode, QProcess::ExitStatus exitStatus) {
 
     QLabel *lblPID = this->ui->statusBar->findChild<QLabel*>("lblPID");
     lblPID->setText("                    ");
+
+    if (this->ui->chkNotification->isChecked()) {
+        system("notify-send \"Crush\" \"Command completed successfully.\"");
+        qDebug() << "NOTIFICATION";
+    }
 }
 
 //******************************************************************************
@@ -123,7 +133,7 @@ void XeqProcess::readyReadStandardOutput() {
         cursor.movePosition(QTextCursor::End);
         outWidget->setTextCursor(cursor);
     }
-    qDebug() << out;
+    // qDebug() << out;
 }
 
 //******************************************************************************
@@ -138,7 +148,7 @@ void XeqProcess::readyReadStandardError() {
         cursor.movePosition(QTextCursor::End);
         errWidget->setTextCursor(cursor);
     }
-    qDebug() << err;
+    // qDebug() << err;
 }
 
 //******************************************************************************

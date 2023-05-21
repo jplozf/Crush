@@ -385,6 +385,7 @@ void MainWindow::saveSettings() {
     registry.setValue("splitter", ui->splitter->saveState());
     registry.setValue("tab", ui->tabWidget->currentIndex());
     registry.setValue("clearConsole", ui->chkClearConsole->isChecked());
+    registry.setValue("sendNotification", ui->chkNotification->isChecked());
 
     //**************************************************************************
     // History saving
@@ -436,6 +437,9 @@ void MainWindow::readSettings() {
 
     const int clearConsole = registry.value("clearConsole", false).toBool();
     ui->chkClearConsole->setChecked(clearConsole);
+
+    const int sendNotification = registry.value("sendNotification", false).toBool();
+    ui->chkNotification->setChecked(sendNotification);
 
     //**************************************************************************
     // History restoring

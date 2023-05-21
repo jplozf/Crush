@@ -133,15 +133,21 @@
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
               <widget class="QCheckBox" name="chkClearConsole">
+               <property name="toolTip">
+                <string>Clear console before running the command</string>
+               </property>
                <property name="text">
                 <string>Clear console</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="chkExternalConsole">
+              <widget class="QCheckBox" name="chkNotification">
+               <property name="toolTip">
+                <string>Send notification at the end</string>
+               </property>
                <property name="text">
-                <string>External console</string>
+                <string>Notification</string>
                </property>
               </widget>
              </item>
@@ -166,7 +172,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>369</width>
+                <width>370</width>
                 <height>249</height>
                </rect>
               </property>
@@ -300,7 +306,7 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>462</width>
+                 <width>461</width>
                  <height>300</height>
                 </rect>
                </property>
