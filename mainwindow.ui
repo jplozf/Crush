@@ -222,24 +222,62 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item row="0" column="0">
-             <widget class="QLabel" name="lblTitle">
-              <property name="font">
-               <font>
-                <family>Courier</family>
-                <pointsize>12</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Box</enum>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="lblTitle">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>Courier</family>
+                  <pointsize>12</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::Box</enum>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="btnClearConsole">
+                <property name="toolTip">
+                 <string>Clear the console's output</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="Crush.qrc">
+                  <normaloff>:/16x16/Trash.png</normaloff>:/16x16/Trash.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="btnCopyConsole">
+                <property name="toolTip">
+                 <string>Copy the console's output into the clipboard</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="Crush.qrc">
+                  <normaloff>:/16x16/Clipboard Copy.png</normaloff>:/16x16/Clipboard Copy.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
@@ -467,13 +505,30 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnEnter">
+       <widget class="QToolButton" name="btnEnter">
+        <property name="toolTip">
+         <string>Run the selected command</string>
+        </property>
         <property name="text">
-         <string>F3</string>
+         <string/>
         </property>
         <property name="icon">
          <iconset resource="Crush.qrc">
           <normaloff>:/16x16/Player Play.png</normaloff>:/16x16/Player Play.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnBreak">
+        <property name="toolTip">
+         <string>Stop the command</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="Crush.qrc">
+          <normaloff>:/16x16/Player Stop.png</normaloff>:/16x16/Player Stop.png</iconset>
         </property>
        </widget>
       </item>

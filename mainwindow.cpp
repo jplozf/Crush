@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     connect(ui->btnEditXML, SIGNAL(clicked()), this, SLOT(slotDoEditXML()));
     connect(ui->txtEditXML, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPosition()));
     connect(ui->btnSaveXML, SIGNAL(clicked()), this, SLOT(slotDoSaveXML()));
+    connect(ui->btnBreak, SIGNAL(clicked()), this, SLOT(slotBreakCommand()));
+    connect(ui->btnClearConsole, SIGNAL(clicked()), this, SLOT(slotClearConsole()));
+    connect(ui->btnCopyConsole, SIGNAL(clicked()), this, SLOT(slotCopyConsole()));
     QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_F3), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(slotRunCommand()));
     connect(ui->btnEnter, SIGNAL(clicked()), this, SLOT(slotRunCommand()));
@@ -114,12 +117,21 @@ void MainWindow::initUI() {
     lblRC->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     lblRC->setObjectName("lblRC");
     lblRC->setFont(QFont("Courier"));
+    lblRC->setToolTip("Return code for previous process");
     ui->statusBar->addPermanentWidget(lblRC, 0);
+
+    lblPID = new QLabel("                    ", this);
+    lblPID->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    lblPID->setObjectName("lblPID");
+    lblPID->setFont(QFont("Courier"));
+    lblPID->setToolTip("PID for running process");
+    ui->statusBar->addPermanentWidget(lblPID, 0);
 
     lblTimeElpased = new QLabel("------ ms", this);
     lblTimeElpased->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     lblTimeElpased->setObjectName("lblTimeElpased");
     lblTimeElpased->setFont(QFont("Courier"));
+    lblTimeElpased->setToolTip("Elapsed time in milliseconds");
     ui->statusBar->addPermanentWidget(lblTimeElpased, 0);
 
     lblLED = new QLabel(this);
@@ -235,26 +247,13 @@ void MainWindow::slotRunCommand() {
     QString cmd = this->ui->txtCommand->text();
     if (cmd.startsWith("!")) {
         if (cmd.toUpper() == "!BREAK") {
-            if (xp)
-                xp->killMe();
+            slotBreakCommand();
         }
         if (cmd.toUpper() == "!QUIT") {
             this->close();
         }
         if (cmd.toUpper() == "!CLS") {
-            this->ui->txtConsoleOut->setText("");
-            if (this->app->processRunning == false) {
-                this->ui->lblTitle->setText("");
-
-                QLabel *lblRC = this->ui->statusBar->findChild<QLabel*>("lblRC");
-                lblRC->setText("RC=0");
-
-                QLabel *lblLED = this->ui->statusBar->findChild<QLabel*>("lblLED");
-                lblLED->setPixmap(QPixmap(":/led_green.png"));
-
-                QLabel *lblTimeElpased = this->ui->statusBar->findChild<QLabel*>("lblTimeElpased");
-                lblTimeElpased->setText("000000 ms");
-            }
+            slotClearConsole();
         }
     } else {
         if (this->ui->chkClearConsole->isChecked()) {
@@ -265,12 +264,55 @@ void MainWindow::slotRunCommand() {
         QString pgm = args.first();
         args.removeFirst();
         xp = new XeqProcess(pgm, args, app, ui);
+        showMessage(QString("Process %1 launched").arg(xp->PID));
     }
     this->ui->txtCommand->selectAll();
     this->aCommands.append(cmd);
     this->iCommands = this->aCommands.count() - 1;
     this->ui->tabWidget->setCurrentIndex(0);
     this->ui->txtCommand->setFocus();
+}
+
+//******************************************************************************
+// slotBreakCommand()
+//******************************************************************************
+void MainWindow::slotBreakCommand() {
+    if (xp->mProcess.state() != QProcess::NotRunning) {
+        showMessage(QString("Process %1 killed").arg(xp->PID));
+        xp->killMe();
+        // free(xp);
+    } else {
+        showMessage("Nothing is running");
+    }
+}
+
+//******************************************************************************
+// slotClearConsole()
+//******************************************************************************
+void MainWindow::slotClearConsole() {
+    this->ui->txtConsoleOut->setText("");
+    if (this->app->processRunning == false) {
+        this->ui->lblTitle->setText("");
+
+        QLabel *lblRC = this->ui->statusBar->findChild<QLabel*>("lblRC");
+        lblRC->setText("RC=0");
+
+        QLabel *lblLED = this->ui->statusBar->findChild<QLabel*>("lblLED");
+        lblLED->setPixmap(QPixmap(":/led_green.png"));
+
+        QLabel *lblTimeElpased = this->ui->statusBar->findChild<QLabel*>("lblTimeElpased");
+        lblTimeElpased->setText("000000 ms");
+    }
+    showMessage("Console's output cleared");
+}
+
+//******************************************************************************
+// slotCopyConsole()
+//******************************************************************************
+void MainWindow::slotCopyConsole() {
+    QClipboard *cp = QGuiApplication::clipboard();
+    cp->setText(this->ui->txtConsoleOut->toPlainText());
+    showMessage("Console's output copied into clipboard");
 }
 
 //******************************************************************************

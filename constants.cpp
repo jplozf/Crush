@@ -122,6 +122,7 @@ QString Constants::setAbout() {
 
     str += QString("</tbody></table>"
            "</blockquote>"
+           "<br>"
            "<hr>"
            "<p><center><em>%1</em></center></p>"
            "</body>"

@@ -10,6 +10,8 @@
 #include <QTimer>
 #include <QShortcut>
 #include <QHash>
+#include <QClipboard>
+#include <QGuiApplication>
 
 #include "qobjectdefs.h"
 #include "ui_mainwindow.h"
@@ -37,7 +39,6 @@ public:
     void initUI();
     bool dirtyFlag;
 
-
 private:
     Ui::MainWindow *ui;
     void populateCommandsList();
@@ -56,6 +57,7 @@ private:
     QLabel *lblRC;
     QLabel *lblTimeElpased;
     QLabel *lblLED;
+    QLabel *lblPID;
 
 private slots:
     void slotSelectCommand(const QString);
@@ -65,6 +67,9 @@ private slots:
     void slotTextChanged();
     void slotDoSaveXML();
     void slotRunCommand();
+    void slotBreakCommand();
+    void slotClearConsole();
+    void slotCopyConsole();
 
 };
 #endif // MAINWINDOW_H

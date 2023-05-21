@@ -12,6 +12,9 @@ XeqProcess::XeqProcess(QString program, QStringList arguments, App *app, Ui::Mai
         this->ui = ui;
         this->app->processRunning = true;
 
+        QLabel *lblRC = this->ui->statusBar->findChild<QLabel*>("lblRC");
+        lblRC->setText(QString("RC=R"));
+
         QLabel *lblLED = this->ui->statusBar->findChild<QLabel*>("lblLED");
         lblLED->setPixmap(QPixmap(":/led_red.png"));
 
@@ -31,6 +34,9 @@ XeqProcess::XeqProcess(QString program, QStringList arguments, App *app, Ui::Mai
         connect(&mProcess, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorOccurred(QProcess::ProcessError)));
 
         mProcess.start(program, arguments);
+        this->PID = mProcess.processId();
+        QLabel *lblPID = this->ui->statusBar->findChild<QLabel*>("lblPID");
+        lblPID->setText(QString("%1").arg(this->PID, 20));
     }
 }
 
@@ -78,6 +84,9 @@ void XeqProcess::errorOccurred(QProcess::ProcessError error) {
     QString eTime;
     eTime.sprintf("%06d ms", elapsed);
     lblTimeElpased->setText(eTime);
+
+    QLabel *lblPID = this->ui->statusBar->findChild<QLabel*>("lblPID");
+    lblPID->setText("                    ");
 }
 
 //******************************************************************************
@@ -97,6 +106,9 @@ void XeqProcess::finished(int exitCode, QProcess::ExitStatus exitStatus) {
     QString eTime;
     eTime.sprintf("%06d ms", elapsed);
     lblTimeElpased->setText(eTime);
+
+    QLabel *lblPID = this->ui->statusBar->findChild<QLabel*>("lblPID");
+    lblPID->setText("                    ");
 }
 
 //******************************************************************************
