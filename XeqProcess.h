@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <QTextEdit>
 #include <QTime>
+#include <QMessageBox>
+#include <QTimer>
 #include "app.h"
 
 QT_BEGIN_NAMESPACE

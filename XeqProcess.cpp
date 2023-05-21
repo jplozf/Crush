@@ -89,8 +89,16 @@ void XeqProcess::errorOccurred(QProcess::ProcessError error) {
     lblPID->setText("                    ");
 
     if (this->ui->chkNotification->isChecked()) {
+#ifdef Q_OS_LINUX
         system("notify-send \"Crush\" \"Command completed in error.\"");
         qDebug() << "NOTIFICATION";
+#else
+        QMessageBox *mbox = new QMessageBox;
+        mbox->setWindowTitle(tr("Crush"));
+        mbox->setText("Command completed in error.");
+        mbox->show();
+        QTimer::singleShot(2000, mbox, SLOT(hide()));
+#endif
     }
 }
 
@@ -116,8 +124,16 @@ void XeqProcess::finished(int exitCode, QProcess::ExitStatus exitStatus) {
     lblPID->setText("                    ");
 
     if (this->ui->chkNotification->isChecked()) {
+#ifdef Q_OS_LINUX
         system("notify-send \"Crush\" \"Command completed successfully.\"");
         qDebug() << "NOTIFICATION";
+#else
+        QMessageBox *mbox = new QMessageBox;
+        mbox->setWindowTitle(tr("Crush"));
+        mbox->setText("Command completed successfully.");
+        mbox->show();
+        QTimer::singleShot(2000, mbox, SLOT(hide()));
+#endif
     }
 }
 
