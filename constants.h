@@ -20,11 +20,9 @@ public:
     bool getBool(std::string param);
     QString getQString(std::string param);
     std::string getString(std::string param);
-    QString helpText;
     QString aboutText;
 
 private:
-    QString setHelp();
     QString setAbout();
 };
 
