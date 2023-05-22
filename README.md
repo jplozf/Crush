@@ -30,8 +30,17 @@
 ## Requirements
 - Qt 5.x libraries
 
+## Screenshots
+- About Tab
+![Crush About Tab](./Screenshots/Crush_About.png)
+- Settings Tab
+![Crush Settings Tab](./Screenshots/Crush_Settings.png)
+- Commands Tab
+![Crush Commands Tab](./Screenshots/Crush_XML_Commands.png)
+- Console Output Tab
+![Crush Console Output Tab](./Screenshots/Crush_Console_Output.png)
+
 ## Todo
 - Dark theme.
 - Running commands into an external terminal.
 - XML syntax description.
-

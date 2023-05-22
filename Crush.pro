@@ -45,5 +45,9 @@ RESOURCES += \
 DISTFILES += \
     LICENSE.md \
     README.md \
+    Screenshots/Crush_About.png \
+    Screenshots/Crush_Console_Output.png \
+    Screenshots/Crush_Settings.png \
+    Screenshots/Crush_XML_Commands.png \
     gosh.xml \
     scratch
