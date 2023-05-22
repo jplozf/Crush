@@ -277,10 +277,13 @@ void MainWindow::slotRunCommand() {
 // slotBreakCommand()
 //******************************************************************************
 void MainWindow::slotBreakCommand() {
-    if (xp->mProcess.state() != QProcess::NotRunning) {
-        showMessage(QString("Process %1 killed").arg(xp->PID));
-        xp->killMe();
-        // free(xp);
+    if (xp) {
+        if (xp->mProcess.state() != QProcess::NotRunning) {
+            showMessage(QString("Process %1 killed").arg(xp->PID));
+            xp->killMe();
+        } else {
+            showMessage("Nothing is running");
+        }
     } else {
         showMessage("Nothing is running");
     }
