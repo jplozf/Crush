@@ -11,6 +11,7 @@
 - [QtCreator for C++](https://www.qt.io/product/development-tools)
 - [Qt5 open source library](https://www.qt.io/download-open-source)
 - [Axialis free icons library](http://www.axialis.com/free/icons) by [Axialis Team](http://www.axialis.com)
+- [Dmitry Ivanov's XML Syntax Highlighter](https://github.com/d1vanov/basic-xml-syntax-highlighter)
 
 ## Authors
 - Main developer : [**J.-P. Liguori**](https://github.com/jplozf/Crush)
