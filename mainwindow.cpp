@@ -140,18 +140,14 @@ void MainWindow::initUI() {
     ui->statusBar->addPermanentWidget(lblLED, 0);
 
     //**************************************************************************
-    // Help tab
+    // About tab
     //**************************************************************************
     QFile file(":/help.html");
     file.open(QFile::ReadOnly | QFile::Text);
     QTextStream stream(&file);
-    ui->txtHelp->setHtml(stream.readAll());
-    // ui->txtHelp->setHtml(app->appConstants->helpText);
-
-    //**************************************************************************
-    // About tab
-    //**************************************************************************
-    ui->txtAbout->setHtml(app->appConstants->aboutText);
+    QString html = app->appConstants->aboutText;
+    html += stream.readAll();
+    ui->txtAbout->setHtml(html);
 }
 
 

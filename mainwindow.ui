@@ -172,7 +172,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>370</width>
+                <width>369</width>
                 <height>249</height>
                </rect>
               </property>
@@ -189,7 +189,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="tabConsoleOut">
            <property name="cursor">
@@ -306,7 +306,7 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>461</width>
+                 <width>462</width>
                  <height>300</height>
                 </rect>
                </property>
@@ -449,20 +449,6 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
              </layout>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tabHelp">
-           <attribute name="icon">
-            <iconset resource="Crush.qrc">
-             <normaloff>:/16x16/Info2.png</normaloff>:/16x16/Info2.png</iconset>
-           </attribute>
-           <attribute name="title">
-            <string>Help</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_6">
-            <item row="0" column="0">
-             <widget class="QTextBrowser" name="txtHelp"/>
             </item>
            </layout>
           </widget>
