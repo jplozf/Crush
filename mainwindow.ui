@@ -483,7 +483,7 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="Crush.qrc">:/16x16/Star.png</pixmap>
+         <pixmap resource="Crush.qrc">:/16x16/Computer.png</pixmap>
         </property>
        </widget>
       </item>

@@ -1,8 +1,11 @@
-<h1 id="crush--a-friendly-program-interface-for-those-who-dont-have-one">Crush | <em>A friendly program interface for those who don&#39;t have one</em></h1>
+<h1 id="crush">Crush</h1>
+<p><em>A friendly program interface for those who don&#39;t have one.</em></p>
 <h2 id="summary">Summary</h2>
 <ul>
 <li><strong>Crush</strong> aims to provide a graphical interface to command line programs which by definition do not have one. Typically, Crush will build a dynamic graphical interface made up of input fields, checkboxes or drop-down lists from a previously defined XML file specifying all the options of the program to be launched. This eliminates the need to remember all the options and their syntax.</li>
-<li></li>
+<li>Command line is dynamically build according to field&#39;s inputs.</li>
+<li>Command line is then available for running and its output is displayed into the pseudo-terminal in real time.</li>
+<li>The XML file needed to represent the commands can be edited in the interface, and its content is directly reflected in the list of available commands.</li>
 </ul>
 <h2 id="built-with">Built with</h2>
 <ul>
@@ -21,29 +24,19 @@
 </ul>
 <h2 id="features">Features</h2>
 <ul>
+<li>Available for Windows and Linux systems.</li>
 <li>Convivial user interface with tooltips.</li>
-<li>Embedded PyInstaller documentation.</li>
-<li>Entry point from main Python script or previously generated spec file.</li>
-<li>Spec file editor with syntax highlighter.</li>
-<li>Real time log and compilation results.</li>
-<li>Generated binary runnable directly from the GUI for testing purposes.</li>
+<li>Pseudo-terminal for running commands and output viewing in real time.</li>
+<li>Notification available upon running completion.</li>
 <li>Customizable GUI colors.</li>
 </ul>
 <h2 id="requirements">Requirements</h2>
 <ul>
-<li>Python 3.x</li>
-<li>PyInstaller</li>
-<li>PyQt5 libraries</li>
-<li>TinyAES if you wish to use the PyInstaller&#39;s obsfucation feature</li>
+<li>Qt 5.x libraries</li>
 </ul>
-<h2 id="screenshots">Screenshots</h2>
+<h2 id="todo">Todo</h2>
 <ul>
-<li>Main screen
-<img src="./pix/screenshots/guinstaller_win_001.png" alt="GUInstaller Screenshot #1"></li>
-<li>Spec file editor
-<img src="./pix/screenshots/guinstaller_win_002.png" alt="GUInstaller Screenshot #2"></li>
-<li>Compiled script ready to be run
-<img src="./pix/screenshots/guinstaller_win_003.png" alt="GUInstaller Screenshot #3"></li>
-<li>Interface in dark mode
-<img src="./pix/screenshots/guinstaller_win_004.png" alt="GUInstaller Screenshot #3"></li>
+<li>Dark theme.</li>
+<li>Running commands into an external terminal.</li>
+<li>XML syntax description.</li>
 </ul>

@@ -62,12 +62,6 @@ QString Constants::getQString(std::string param) {
 QString Constants::setAbout() {
     QString str;
     str = QString(
-        "<!DOCTYPE html"
-        "<html>"
-        "<head>"
-        "<title>About</title>"
-        "</head>"
-        "<body>"
         "<h2 id=\"crush\">%1 v%2</h2>"
         "<hr>"
         "<blockquote>"
@@ -86,9 +80,7 @@ QString Constants::setAbout() {
            "</blockquote>"
            "<br>"
            "<hr>"
-           "<p><center><em>%1</em></center></p>"
-           "</body>"
-           "</html>").arg(this->getQString("COPYRIGHT"));
+           "<p><center><em>%1</em></center></p>").arg(this->getQString("COPYRIGHT"));
 
     return str;
 }
