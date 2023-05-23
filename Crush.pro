@@ -50,4 +50,5 @@ DISTFILES += \
     Screenshots/Crush_Settings.png \
     Screenshots/Crush_XML_Commands.png \
     gosh.xml \
-    scratch
+    scratch \
+    todo

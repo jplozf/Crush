@@ -314,16 +314,17 @@ void CommandUI::addOptionEscString(QVBoxLayout* layout, int row, const QDomEleme
 void CommandUI::addOptionPassword(QVBoxLayout* layout, int row, const QDomElement& option) {
     QHBoxLayout* lineLayout = new QHBoxLayout();
     layout->addLayout(lineLayout, row);
-    QLineEdit* myLineEdit = new QLineEdit();
+    QLineEdit* myPassword = new QLineEdit();
+    myPassword->setEchoMode(QLineEdit::Password);
     QDomElement opt = option;
-    QObject::connect(myLineEdit, &QLineEdit::textChanged,
+    QObject::connect(myPassword, &QLineEdit::textChanged,
         [=](const QString v) {
             qDebug() << "connecting";
-            uiPasswordEvent(myLineEdit, v, opt);
+            uiPasswordEvent(myPassword, v, opt);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
-    lineLayout->addWidget(myLineEdit);
+    lineLayout->addWidget(myPassword);
 }
 
 //******************************************************************************
