@@ -63,10 +63,11 @@ QString Constants::setAbout() {
     QString str;
     str = QString(
         "<h2 id=\"crush\">%1 v%2</h2>"
+        "<em>branch: %3, version: %4, built_at: %5</em>"
         "<hr>"
         "<blockquote>"
         "<table>"
-        "<tbody>").arg(this->getQString("APPLICATION_NAME"), this->getQString("VERSION"));
+        "<tbody>").arg(this->getQString("APPLICATION_NAME"), this->getQString("VERSION")).arg(GIT_BRANCH).arg(GIT_HASH).arg(BUILD_TIMESTAMP);
 
     QMap<QString, QString> props = Utils::systemProperties();
     for (auto iter = props.constBegin(); iter != props.constEnd(); ++iter) {
