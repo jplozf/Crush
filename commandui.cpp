@@ -125,6 +125,9 @@ QString CommandUI::parse(const QString fName, const QString cmd, QVBoxLayout *la
                         } else if (option.attribute("format","NONE") == "CHECKBOX") {
                             qDebug() << "CHECKBOX";
                             addOptionCheckbox(groupBoxLayout, x, option);
+                        } else if (option.attribute("format","NONE") == "CONSTANT") {
+                            qDebug() << "CONSTANT";
+                            addOptionConstant(groupBoxLayout, x, option);
                         } else if (option.attribute("format","NONE") == "TRAILING") {
                             qDebug() << "TRAILING";
                             addOptionTrailing(groupBoxLayout, x, option);
@@ -158,6 +161,17 @@ QString CommandUI::parse(const QString fName, const QString cmd, QVBoxLayout *la
 }
 
 //******************************************************************************
+// addOptionConstant()
+//******************************************************************************
+void CommandUI::addOptionConstant(QVBoxLayout* layout, int row, const QDomElement& option) {
+    QList<QDomElement> elm;
+    findElementsWithTagName(option, QString("value"), elm);
+    qDebug() << elm.at(0).text();
+    addParameter(spaceOrNot(option) + elm.at(0).text() + spaceOrNot(option), "", row);
+    updateCommandLine();
+}
+
+//******************************************************************************
 // addOptionTrailing()
 //******************************************************************************
 void CommandUI::addOptionTrailing(QVBoxLayout* layout, int row, const QDomElement& option) {
@@ -177,7 +191,7 @@ void CommandUI::addOptionCheckbox(QVBoxLayout* layout, int row, const QDomElemen
     QObject::connect(myCheckBox, &QCheckBox::stateChanged,
         [=](const int state) {
             qDebug() << "connecting";
-            uiCheckboxEvent(myCheckBox, state, opt);
+            uiCheckboxEvent(myCheckBox, state, opt, row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -195,14 +209,14 @@ void CommandUI::addOptionDir(QVBoxLayout* layout, int row, const QDomElement& op
     QObject::connect(myFileEdit, &QLineEdit::textChanged,
         [=](const QString v) {
             qDebug() << "connecting";
-            uiDirEvent(myFileEdit, v, opt);
+            uiDirEvent(myFileEdit, v, opt, row);
         }
     );
     QPushButton* myButtonFile = new QPushButton();
-    myButtonFile->setIcon(QIcon("16x16/Document.png"));
+    myButtonFile->setIcon(QIcon(":/16x16/Document Text.png"));
     QObject::connect(myButtonFile, &QPushButton::clicked,
         [=]() {
-            uiButtonDirEvent(myFileEdit);
+            uiButtonDirEvent(myFileEdit, row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -221,14 +235,14 @@ void CommandUI::addOptionNewDir(QVBoxLayout* layout, int row, const QDomElement&
     QObject::connect(myFileEdit, &QLineEdit::textChanged,
         [=](const QString v) {
             qDebug() << "connecting";
-            uiNewDirEvent(myFileEdit, v, opt);
+            uiNewDirEvent(myFileEdit, v, opt, row);
         }
     );
     QPushButton* myButtonFile = new QPushButton();
-    myButtonFile->setIcon(QIcon("16x16/Document.png"));
+    myButtonFile->setIcon(QIcon(":/16x16/Document Text.png"));
     QObject::connect(myButtonFile, &QPushButton::clicked,
         [=]() {
-            uiButtonNewDirEvent(myFileEdit);
+            uiButtonNewDirEvent(myFileEdit, row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -247,7 +261,7 @@ void CommandUI::addOptionList(QVBoxLayout* layout, int row, const QDomElement& o
     QObject::connect(myListBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
         [=](int index) {
             qDebug() << "connecting";
-            uiListboxEvent(myListBox, index, opt);
+            uiListboxEvent(myListBox, index, opt, row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -265,7 +279,7 @@ void CommandUI::addOptionLink(QVBoxLayout* layout, int row, const QDomElement& o
     QObject::connect(myButton, &QPushButton::clicked,
         [=]() {
             qDebug() << "connecting";
-            uiButtonEvent(opt);
+            uiButtonEvent(opt, row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -283,7 +297,7 @@ void CommandUI::addOptionUsername(QVBoxLayout* layout, int row, const QDomElemen
     QObject::connect(myLineEdit, &QLineEdit::textChanged,
         [=](const QString v) {
             qDebug() << "connecting";
-            uiUsernameEvent(myLineEdit, v, opt);
+            uiUsernameEvent(myLineEdit, v, opt, row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -301,7 +315,7 @@ void CommandUI::addOptionEscString(QVBoxLayout* layout, int row, const QDomEleme
     QObject::connect(myLineEdit, &QLineEdit::textChanged,
         [=](const QString v) {
             qDebug() << "connecting";
-            uiEscStringEvent(myLineEdit, v, opt);
+            uiEscStringEvent(myLineEdit, v, opt, row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -320,7 +334,7 @@ void CommandUI::addOptionPassword(QVBoxLayout* layout, int row, const QDomElemen
     QObject::connect(myPassword, &QLineEdit::textChanged,
         [=](const QString v) {
             qDebug() << "connecting";
-            uiPasswordEvent(myPassword, v, opt);
+            uiPasswordEvent(myPassword, v, opt, row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -338,14 +352,14 @@ void CommandUI::addOptionFile(QVBoxLayout* layout, int row, const QDomElement& o
     QObject::connect(myFileEdit, &QLineEdit::textChanged,
         [=](const QString v) {
             qDebug() << "connecting";
-            uiFileEvent(myFileEdit, v, opt);
+            uiFileEvent(myFileEdit, v, opt, row);
         }
     );
     QPushButton* myButtonFile = new QPushButton();
-    myButtonFile->setIcon(QIcon("16x16/Document.png"));
+    myButtonFile->setIcon(QIcon(":/16x16/Document Text.png"));
     QObject::connect(myButtonFile, &QPushButton::clicked,
         [=]() {
-            uiButtonFileEvent(myFileEdit, getExtensionFile(option));
+            uiButtonFileEvent(myFileEdit, getExtensionFile(option), row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -364,14 +378,14 @@ void CommandUI::addOptionNewFile(QVBoxLayout* layout, int row, const QDomElement
     QObject::connect(myFileEdit, &QLineEdit::textChanged,
         [=](const QString v) {
             qDebug() << "connecting";
-            uiNewFileEvent(myFileEdit, v, opt);
+            uiNewFileEvent(myFileEdit, v, opt, row);
         }
     );
     QPushButton* myButtonFile = new QPushButton();
-    myButtonFile->setIcon(QIcon("16x16/Document.png"));
+    myButtonFile->setIcon(QIcon(":/16x16/Document Text.png"));
     QObject::connect(myButtonFile, &QPushButton::clicked,
         [=]() {
-            uiButtonNewFileEvent(myFileEdit, getExtensionFile(option));
+            uiButtonNewFileEvent(myFileEdit, getExtensionFile(option), row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -390,7 +404,7 @@ void CommandUI::addOptionSysname(QVBoxLayout* layout, int row, const QDomElement
     QObject::connect(myLineEdit, &QLineEdit::textChanged,
         [=](const QString v) {
             qDebug() << "connecting";
-            uiSysnameEvent(myLineEdit, v, opt);
+            uiSysnameEvent(myLineEdit, v, opt, row);
         }
     );
     lineLayout->addWidget(new QLabel(getLabel(option)));
@@ -462,18 +476,18 @@ void CommandUI::addSpacer(QVBoxLayout* layout, int row) {
 //******************************************************************************
 // uiPasswordEvent()
 //******************************************************************************
-void CommandUI::uiPasswordEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+void CommandUI::uiPasswordEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row) {
     qDebug() << value;
     qDebug() << option.text();
     if (value == "") {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
-        removeParameter(elm.at(0).text());
+        removeParameter(elm.at(0).text(), row);
     } else {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
         qDebug() << elm.at(0).text();
-        addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option));
+        addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option), row);
     }
     updateCommandLine();
 }
@@ -481,18 +495,18 @@ void CommandUI::uiPasswordEvent(QLineEdit* lineEdit, QString value, const QDomEl
 //******************************************************************************
 // uiEscStringEvent()
 //******************************************************************************
-void CommandUI::uiEscStringEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+void CommandUI::uiEscStringEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row) {
     qDebug() << value;
     qDebug() << option.text();
     if (value == "") {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
-        removeParameter(elm.at(0).text());
+        removeParameter(elm.at(0).text(), row);
     } else {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
         qDebug() << elm.at(0).text();
-        addParameter(elm.at(0).text(), spaceOrNot(option) + "\"" + value + "\"" + spaceOrNot(option));
+        addParameter(elm.at(0).text(), spaceOrNot(option) + "\"" + value + "\"" + spaceOrNot(option), row);
     }
     updateCommandLine();
 }
@@ -500,28 +514,28 @@ void CommandUI::uiEscStringEvent(QLineEdit* lineEdit, QString value, const QDomE
 //******************************************************************************
 // uiButtonEvent()
 //******************************************************************************
-void CommandUI::uiButtonEvent(const QDomElement& option) {
+void CommandUI::uiButtonEvent(const QDomElement& option, int row) {
     QList<QDomElement> elm;
     findElementsWithTagName(option, QString("value"), elm);
     qDebug() << elm.at(0).text();
-    addParameter(elm.at(0).text(), "");
+    addParameter(elm.at(0).text(), "", row);
     updateCommandLine();
 }
 
 //******************************************************************************
 // uiListboxEvent()
 //******************************************************************************
-void CommandUI::uiListboxEvent(QComboBox* listBox, int index, const QDomElement& option) {
+void CommandUI::uiListboxEvent(QComboBox* listBox, int index, const QDomElement& option, int row) {
     QString value = listBox->itemText(index);
     if (value == "") {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
-        removeParameter(elm.at(0).text());
+        removeParameter(elm.at(0).text(), row);
     } else {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
         qDebug() << elm.at(0).text();
-        addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option));
+        addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option), row);
     }
     updateCommandLine();
 }
@@ -529,15 +543,15 @@ void CommandUI::uiListboxEvent(QComboBox* listBox, int index, const QDomElement&
 //******************************************************************************
 // uiCheckboxEvent()
 //******************************************************************************
-void CommandUI::uiCheckboxEvent(QCheckBox* listBox, int state, const QDomElement& option) {
+void CommandUI::uiCheckboxEvent(QCheckBox* listBox, int state, const QDomElement& option, int row) {
     if (state == Qt::Checked) {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
-        addParameter(elm.at(0).text(), "");
+        addParameter(elm.at(0).text(), "", row);
     } else {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
-        removeParameter(elm.at(0).text());
+        removeParameter(elm.at(0).text(), row);
     }
     updateCommandLine();
 }
@@ -545,7 +559,7 @@ void CommandUI::uiCheckboxEvent(QCheckBox* listBox, int state, const QDomElement
 //******************************************************************************
 // uiFileEvent()
 //******************************************************************************
-void CommandUI::uiFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {   
+void CommandUI::uiFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row) {
     QString name;
     QList<QDomElement> elm;
     findElementsWithTagName(option, QString("value"), elm);
@@ -556,9 +570,9 @@ void CommandUI::uiFileEvent(QLineEdit* lineEdit, QString value, const QDomElemen
         name.sprintf("%s", elm.at(0).text().toStdString().c_str());
     }
     if (value == "") {
-        removeParameter(name);
+        removeParameter(name, row);
     } else {
-        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option));
+        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option), row);
     }
     updateCommandLine();
 }
@@ -566,7 +580,7 @@ void CommandUI::uiFileEvent(QLineEdit* lineEdit, QString value, const QDomElemen
 //******************************************************************************
 // uiNewFileEvent()
 //******************************************************************************
-void CommandUI::uiNewFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+void CommandUI::uiNewFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row) {
     QString name;
     QList<QDomElement> elm;
     findElementsWithTagName(option, QString("value"), elm);
@@ -577,9 +591,9 @@ void CommandUI::uiNewFileEvent(QLineEdit* lineEdit, QString value, const QDomEle
         name.sprintf("%s", elm.at(0).text().toStdString().c_str());
     }
     if (value == "") {
-        removeParameter(name);
+        removeParameter(name, row);
     } else {
-        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option));
+        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option), row);
     }
     updateCommandLine();
 }
@@ -587,18 +601,18 @@ void CommandUI::uiNewFileEvent(QLineEdit* lineEdit, QString value, const QDomEle
 //******************************************************************************
 // uiUsernameEvent()
 //******************************************************************************
-void CommandUI::uiUsernameEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+void CommandUI::uiUsernameEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row) {
     qDebug() << value;
     qDebug() << option.text();
     if (value == "") {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
-        removeParameter(elm.at(0).text());
+        removeParameter(elm.at(0).text(), row);
     } else {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
         qDebug() << elm.at(0).text();
-        addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option));
+        addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option), row);
     }
     updateCommandLine();
 }
@@ -606,18 +620,18 @@ void CommandUI::uiUsernameEvent(QLineEdit* lineEdit, QString value, const QDomEl
 //******************************************************************************
 // uiSysnameEvent()
 //******************************************************************************
-void CommandUI::uiSysnameEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+void CommandUI::uiSysnameEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row) {
     qDebug() << value;
     qDebug() << option.text();
     if (value == "") {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
-        removeParameter(elm.at(0).text());
+        removeParameter(elm.at(0).text(), row);
     } else {
         QList<QDomElement> elm;
         findElementsWithTagName(option, QString("value"), elm);
         qDebug() << elm.at(0).text();
-        addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option));
+        addParameter(elm.at(0).text(), spaceOrNot(option) + value + spaceOrNot(option), row);
     }
     updateCommandLine();
     /*
@@ -632,7 +646,7 @@ void CommandUI::uiSysnameEvent(QLineEdit* lineEdit, QString value, const QDomEle
 //******************************************************************************
 // uiButtonFileEvent()
 //******************************************************************************
-void CommandUI::uiButtonFileEvent(QLineEdit* fileEdit, QString ext) {
+void CommandUI::uiButtonFileEvent(QLineEdit* fileEdit, QString ext, int row) {
     QString fileName = QFileDialog::getOpenFileName(NULL, tr("Open File"), QDir::currentPath(), ext);
     fileEdit->setText(fileName);
     /*
@@ -644,7 +658,7 @@ void CommandUI::uiButtonFileEvent(QLineEdit* fileEdit, QString ext) {
 //******************************************************************************
 // uiButtonNewFileEvent()
 //******************************************************************************
-void CommandUI::uiButtonNewFileEvent(QLineEdit* fileEdit, QString ext) {
+void CommandUI::uiButtonNewFileEvent(QLineEdit* fileEdit, QString ext, int row) {
     QString fileName = QFileDialog::getSaveFileName(NULL, tr("New File"), QDir::currentPath(), ext);
     fileEdit->setText(fileName);
     /*
@@ -656,7 +670,7 @@ void CommandUI::uiButtonNewFileEvent(QLineEdit* fileEdit, QString ext) {
 //******************************************************************************
 // uiDirEvent()
 //******************************************************************************
-void CommandUI::uiDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+void CommandUI::uiDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row) {
     QString name;
     QList<QDomElement> elm;
     findElementsWithTagName(option, QString("value"), elm);
@@ -667,9 +681,9 @@ void CommandUI::uiDirEvent(QLineEdit* lineEdit, QString value, const QDomElement
         name.sprintf("%s", elm.at(0).text().toStdString().c_str());
     }
     if (value == "") {
-        removeParameter(name);
+        removeParameter(name, row);
     } else {
-        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option));
+        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option), row);
     }
     updateCommandLine();
 }
@@ -677,7 +691,7 @@ void CommandUI::uiDirEvent(QLineEdit* lineEdit, QString value, const QDomElement
 //******************************************************************************
 // uiButtonDirEvent()
 //******************************************************************************
-void CommandUI::uiButtonDirEvent(QLineEdit* fileEdit) {
+void CommandUI::uiButtonDirEvent(QLineEdit* fileEdit, int row) {
     QString fileName = QFileDialog::getExistingDirectory(NULL, tr("Open directory"), QDir::currentPath());
     fileEdit->setText(fileName);
 }
@@ -685,7 +699,7 @@ void CommandUI::uiButtonDirEvent(QLineEdit* fileEdit) {
 //******************************************************************************
 // uiNewDirEvent()
 //******************************************************************************
-void CommandUI::uiNewDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option) {
+void CommandUI::uiNewDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row) {
     QString name;
     QList<QDomElement> elm;
     findElementsWithTagName(option, QString("value"), elm);
@@ -696,9 +710,9 @@ void CommandUI::uiNewDirEvent(QLineEdit* lineEdit, QString value, const QDomElem
         name.sprintf("%s", elm.at(0).text().toStdString().c_str());
     }
     if (value == "") {
-        removeParameter(name);
+        removeParameter(name, row);
     } else {
-        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option));
+        addParameter(name, spaceOrNot(option) + value + spaceOrNot(option), row);
     }
     updateCommandLine();
 }
@@ -706,7 +720,7 @@ void CommandUI::uiNewDirEvent(QLineEdit* lineEdit, QString value, const QDomElem
 //******************************************************************************
 // uiButtonNewDirEvent()
 //******************************************************************************
-void CommandUI::uiButtonNewDirEvent(QLineEdit* fileEdit) {
+void CommandUI::uiButtonNewDirEvent(QLineEdit* fileEdit, int row) {
     QString fileName = QFileDialog::getExistingDirectory(NULL, tr("New directory source"), QDir::currentPath());
     fileEdit->setText(fileName);
 }
@@ -714,7 +728,8 @@ void CommandUI::uiButtonNewDirEvent(QLineEdit* fileEdit) {
 //******************************************************************************
 // addParameter()
 //******************************************************************************
-void CommandUI::addParameter(QString param, QString value, bool spaces) {
+void CommandUI::addParameter(QString param, QString value, int row, bool spaces) {
+    param = QStringLiteral("%1").arg(row, 5, 10, QLatin1Char('0')) + param;
     qDebug() << param;
     qDebug() << value;
 
@@ -740,7 +755,8 @@ void CommandUI::addParameter(QString param, QString value, bool spaces) {
 //******************************************************************************
 // replaceParameter()
 //******************************************************************************
-void CommandUI::replaceParameter(QString param, QString value, bool spaces) {
+void CommandUI::replaceParameter(QString param, QString value, int row, bool spaces) {
+    param = QStringLiteral("%1").arg(row, 5, 10, QLatin1Char('0')) + param;
     par[param] = value;
     /*
     for key in self.par.keys():
@@ -752,7 +768,8 @@ void CommandUI::replaceParameter(QString param, QString value, bool spaces) {
 //******************************************************************************
 // removeParameter()
 //******************************************************************************
-void CommandUI::removeParameter(QString param) {
+void CommandUI::removeParameter(QString param, int row) {
+    param = QStringLiteral("%1").arg(row, 5, 10, QLatin1Char('0')) + param;
     par.remove(param);
     /*
     if param in self.par:
@@ -787,7 +804,9 @@ void CommandUI::updateCommandLine() {
     QMapIterator<QString, QString> i(this->par);
     while (i.hasNext()) {
         i.next();
-        qDebug() << i.key() << ": " << i.value();
+        QString key = i.key();
+        key.remove(0, 5); // We have to drop the 5 first chars of the key which are actually the row index
+        qDebug() << key << ": " << i.value();
         QString param = i.value();
         if (param[0]==' ' && param[param.length()-1]==' ') {
             if (param.trimmed().contains(" ")) {
@@ -802,10 +821,10 @@ void CommandUI::updateCommandLine() {
                 pvalue = param.trimmed();
             }
         }
-        if (i.key().startsWith("*N/A")) {
+        if (key.startsWith("*N/A")) {
             sXeq = sXeq + pvalue;
         } else {
-            sXeq = sXeq + i.key() + pvalue;
+            sXeq = sXeq + key + pvalue;
         }
     }
     foreach(QString p, trailing) {

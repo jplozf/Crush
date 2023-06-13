@@ -175,5 +175,6 @@
         <file>led_green.png</file>
         <file>led_red.png</file>
         <file>help.html</file>
+        <file>crush_icon.png</file>
     </qresource>
 </RCC>

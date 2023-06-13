@@ -36,7 +36,7 @@ XeqProcess::XeqProcess(QString program, QStringList arguments, App *app, Ui::Mai
         mProcess.start(program, arguments);
         this->PID = mProcess.processId();
         QLabel *lblPID = this->ui->statusBar->findChild<QLabel*>("lblPID");
-        lblPID->setText(QString("%1").arg(this->PID, 20));
+        lblPID->setText(QString("PID:%1").arg(this->PID, 16));
     }
 }
 

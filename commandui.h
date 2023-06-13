@@ -57,10 +57,11 @@ private:
     void addOptionDir(QVBoxLayout* layout, int row, const QDomElement& option);
     void addOptionNewDir(QVBoxLayout* layout, int row, const QDomElement& option);
     void addOptionCheckbox(QVBoxLayout* layout, int row, const QDomElement& option);
+    void addOptionConstant(QVBoxLayout* layout, int row, const QDomElement& option);
     void addOptionTrailing(QVBoxLayout* layout, int row, const QDomElement& option);
-    void addParameter(QString param, QString value, bool spaces=true);
-    void replaceParameter(QString param, QString value, bool spaces=true);
-    void removeParameter(QString param);
+    void addParameter(QString param, QString value, int row, bool spaces=true);
+    void replaceParameter(QString param, QString value, int row, bool spaces=true);
+    void removeParameter(QString param, int row);
     QString spaceOrNot(const QDomElement& option);
     QString getLabel(const QDomElement& option);
     QString getExtensionFile(const QDomElement& option);
@@ -68,21 +69,21 @@ private:
     void addSpacer(QVBoxLayout* layout, int row);
 
 private slots:
-    void uiSysnameEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
-    void uiUsernameEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
-    void uiEscStringEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
-    void uiPasswordEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
-    void uiButtonEvent(const QDomElement& option);
-    void uiListboxEvent(QComboBox* listBox, int index, const QDomElement& option);
-    void uiButtonFileEvent(QLineEdit* fileEdit, QString ext);
-    void uiButtonNewFileEvent(QLineEdit* fileEdit, QString ext);
-    void uiFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
-    void uiNewFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
-    void uiDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
-    void uiButtonDirEvent(QLineEdit* fileEdit);
-    void uiNewDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option);
-    void uiButtonNewDirEvent(QLineEdit* fileEdit);
-    void uiCheckboxEvent(QCheckBox* checkBox, int state, const QDomElement& option);
+    void uiSysnameEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row);
+    void uiUsernameEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row);
+    void uiEscStringEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row);
+    void uiPasswordEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row);
+    void uiButtonEvent(const QDomElement& option, int row);
+    void uiListboxEvent(QComboBox* listBox, int index, const QDomElement& option, int row);
+    void uiButtonFileEvent(QLineEdit* fileEdit, QString ext, int row);
+    void uiButtonNewFileEvent(QLineEdit* fileEdit, QString ext, int row);
+    void uiFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row);
+    void uiNewFileEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row);
+    void uiDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row);
+    void uiButtonDirEvent(QLineEdit* fileEdit, int row);
+    void uiNewDirEvent(QLineEdit* lineEdit, QString value, const QDomElement& option, int row);
+    void uiButtonNewDirEvent(QLineEdit* fileEdit, int row);
+    void uiCheckboxEvent(QCheckBox* checkBox, int state, const QDomElement& option, int row);
 
 };
 
