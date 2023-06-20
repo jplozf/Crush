@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     connect(ui->btnEditXML, SIGNAL(clicked()), this, SLOT(slotDoEditXML()));
     connect(ui->txtEditXML, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPosition()));
     connect(ui->btnSaveXML, SIGNAL(clicked()), this, SLOT(slotDoSaveXML()));
+    connect(ui->btnImportXML, SIGNAL(clicked()), this, SLOT(slotDoImportXML()));
+    connect(ui->btnExportXML, SIGNAL(clicked()), this, SLOT(slotDoExportXML()));
     connect(ui->btnBreak, SIGNAL(clicked()), this, SLOT(slotBreakCommand()));
     connect(ui->btnClearConsole, SIGNAL(clicked()), this, SLOT(slotClearConsole()));
     connect(ui->btnCopyConsole, SIGNAL(clicked()), this, SLOT(slotCopyConsole()));
@@ -34,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     setWindowTitle(appTitle);
 
     QTimer::singleShot(500, this, &MainWindow::setDelayed);
-}
+ }
 
 //******************************************************************************
 // ~MainWindow()
@@ -222,7 +224,7 @@ void MainWindow::slotDoSaveXML() {
     QFile f(this->fName);
     if (f.open(QIODevice::Text | QIODevice::ReadWrite )) {
         QTextStream stream(&f);
-        stream << ui->txtEditXML->document()->toPlainText() << endl;
+        stream << ui->txtEditXML->document()->toPlainText() << Qt::endl;
         f.close();
         xmlCommands.setContent(&f);
         populateCommandsList();
@@ -232,6 +234,84 @@ void MainWindow::slotDoSaveXML() {
         showMessage("XML file saved");
     } else {
         showMessage("Can't save XML file");
+    }
+}
+
+//******************************************************************************
+// mergeXML()
+//******************************************************************************
+void MainWindow::mergeXML(QFile fSource, QFile fTarget) {
+    // Open source document as doc#1
+    QDomDocument doc1("my_document_1");
+    if (!fSource.open(QIODevice::ReadOnly))
+        qDebug() << "Can't open source";
+        return;
+    if (!doc1.setContent(&fSource)) {
+        qDebug() << "Can't load source";
+        fSource.close();
+        return;
+    }
+    fSource.close();
+
+    // Read all doc#1 nodes from Commands
+    QDomElement root = doc1.documentElement();
+    QList<QDomElement> elements;
+    QDomElement child = root.firstChildElement("commands");
+    while(!child.isNull()) {
+        elements.append( child );
+        child = child.nextSiblingElement("commands");
+    }
+
+    // Open target document as doc#2
+    QDomDocument doc2("my_document_2");
+    if (!fTarget.open(QIODevice::ReadOnly))
+        qDebug() << "Can't open target";
+        return;
+    if (!doc2.setContent(&fTarget)) {
+        qDebug() << "Can't load target";
+        fTarget.close();
+        return;
+    }
+    fTarget.close();
+
+    // Append doc#1 nodes to doc#2
+    QDomElement commands = doc2.documentElement().firstChildElement("commands");
+    for(int i=0; i<elements.count(); i++) {
+        commands.appendChild(elements[i]);
+    }
+    QFile fNew("/home/jpl/out.xml");
+    if(!fNew.open(QIODevice::ReadWrite | QIODevice::Text)) {
+        qDebug( "Failed to open file for writing." );
+        return;
+    }
+    QTextStream stream(&fNew);
+    stream << doc2.toString();
+    fNew.close();
+}
+
+//******************************************************************************
+// slotDoImportXML()
+//******************************************************************************
+void MainWindow::slotDoImportXML() {
+    QString source = QFileDialog::getOpenFileName(this, tr("Import File"), QDir::homePath(), tr("XML File (*.xml)"));
+    if (!source.isEmpty()) {
+        mergeXML(QFile(source), this->fName);
+        showMessage(QString("XML file %1 imported into current XML file").arg(source));
+    } else {
+        showMessage("XML file not imported");
+    }
+}
+
+//******************************************************************************
+// slotDoExportXML()
+//******************************************************************************
+void MainWindow::slotDoExportXML() {
+    QString target = QFileDialog::getSaveFileName(this, tr("Export File"),QDir::homePath(),tr("XML File (*.xml)"));
+    if (!target.isEmpty()) {
+        QFile::copy(this->fName, target);
+        showMessage(QString("XML file exported to %1").arg(target));
+    } else {
+        showMessage("XML file not exported");
     }
 }
 

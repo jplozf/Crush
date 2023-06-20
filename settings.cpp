@@ -19,7 +19,7 @@ Settings::Settings()
     defaults["CONSOLE_FONT_STYLE"] = QVariant("normal");
     defaults["CONSOLE_FONT_WEIGHT"] = QVariant("normal");
     defaults["CONSOLE_CODEPAGE"] = QVariant("cp850");
-    defaults["COMMAND_FILE"] = QVariant("gosh.xml");
+    // defaults["COMMAND_FILE"] = QVariant("gosh.xml");
     defaults["STATUSBAR_TIMEOUT"] = QVariant(3000);
     defaults["XML_KEYWORD_COLOR"] = QVariant("#8B008B");
     defaults["XML_KEYWORD_WEIGHT"] = QVariant(QFont::Bold);

@@ -22,6 +22,7 @@ App::App() {
     // Download the documentation files
     //**************************************************************************
     // docDir = appDir + QDir::separator() + appConstants->getQString("DOC_SUBFOLDER") + QDir::separator();
+    /*
     docDir = appDir + "/" + appConstants->getQString("XML_SUBFOLDER");
     if (!QDir(docDir).exists()) {
         QDir().mkdir(docDir);
@@ -30,4 +31,5 @@ App::App() {
     foreach(QStringList item, f) {
         Downloader::downloadFile(appConstants->getQString("WEB_REPOSITORY") + item[0], docDir + item[0]);
     }
+    */
 }

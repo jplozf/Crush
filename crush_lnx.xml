@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<commands>
+    <command title='Ping'>
+            <value>ping</value>
+            <group>
+                    <options>
+                            <option format='CHECKBOX'>
+                                    <value>8.8.8.8</value>
+                                    <label>Google's DNS</label>
+                            </option>
+                            <option format='SYSNAME' nospace="">
+                                    <value></value>
+                                    <label>address</label>
+                            </option>
+                    </options>
+            </group>
+    </command>
+    <command title='Advanced Package Tool'>
+            <value>sudo apt</value>
+            <group>
+                    <options>
+                            <option format='CHECKBOX'>
+                                    <value>update</value>
+                                    <label>update</label>
+                            </option>
+                            <option format='CHECKBOX'>
+                                    <value>upgrade -y</value>
+                                    <label>upgrade</label>
+                            </option>
+                            <option format='CHECKBOX'>
+                                    <value>autoremove -y</value>
+                                    <label>autoremove</label>
+                            </option>
+                    </options>
+            </group>
+    </command>
+</commands>

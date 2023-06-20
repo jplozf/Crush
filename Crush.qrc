@@ -176,5 +176,7 @@
         <file>led_red.png</file>
         <file>help.html</file>
         <file>crush_icon.png</file>
+        <file>crush_win.xml</file>
+        <file>crush_lnx.xml</file>
     </qresource>
 </RCC>
