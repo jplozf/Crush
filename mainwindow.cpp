@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     readSettings();
     if (openXMLFile()) {
         populateCommandsList();
-        showMessage("Welcome to " + app->appConstants->getQString("APPLICATION_NAME"));
+        showMessage(QString("Welcome to %1").arg(app->appConstants->getQString("APPLICATION_NAME")));
     } else {
         showMessage("No XML file found", 0);
     }
@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
 //******************************************************************************
 MainWindow::~MainWindow() {
     delete ui;
-    delete xp;
+    // delete xp;
     delete cUI;
 }
 
@@ -222,8 +222,9 @@ void MainWindow::slotTextChanged() {
 //******************************************************************************
 void MainWindow::slotDoSaveXML() {
     QFile f(this->fName);
-    if (f.open(QIODevice::Text | QIODevice::ReadWrite )) {
+    if (f.open(QFile::Text | QFile::WriteOnly | QFile::Truncate)) {
         QTextStream stream(&f);
+        qDebug() << ui->txtEditXML->document()->toPlainText();
         stream << ui->txtEditXML->document()->toPlainText() << Qt::endl;
         f.close();
         xmlCommands.setContent(&f);
@@ -240,53 +241,63 @@ void MainWindow::slotDoSaveXML() {
 //******************************************************************************
 // mergeXML()
 //******************************************************************************
-void MainWindow::mergeXML(QFile fSource, QFile fTarget) {
-    // Open source document as doc#1
-    QDomDocument doc1("my_document_1");
-    if (!fSource.open(QIODevice::ReadOnly))
-        qDebug() << "Can't open source";
-        return;
-    if (!doc1.setContent(&fSource)) {
-        qDebug() << "Can't load source";
-        fSource.close();
-        return;
-    }
-    fSource.close();
+void MainWindow::mergeXML(QString f1, QString f2) {
+    QDomDocument doc1, doc2;
+    QFile file1(f1);
+    QFile file2(f2);
 
-    // Read all doc#1 nodes from Commands
-    QDomElement root = doc1.documentElement();
-    QList<QDomElement> elements;
-    QDomElement child = root.firstChildElement("commands");
-    while(!child.isNull()) {
-        elements.append( child );
-        child = child.nextSiblingElement("commands");
-    }
+    if (file1.open(QIODevice::ReadOnly) && file2.open(QIODevice::ReadOnly)) {
+        if (doc1.setContent(&file1)) {
+            if (doc2.setContent(&file2)) {
+                // XML data loaded successfully
+                QDomElement root1 = doc1.documentElement();
+                QDomElement root2 = doc2.documentElement();
+                QDomNodeList nodes = root2.childNodes();
 
-    // Open target document as doc#2
-    QDomDocument doc2("my_document_2");
-    if (!fTarget.open(QIODevice::ReadOnly))
-        qDebug() << "Can't open target";
-        return;
-    if (!doc2.setContent(&fTarget)) {
-        qDebug() << "Can't load target";
-        fTarget.close();
-        return;
-    }
-    fTarget.close();
+                for (int i = 0; i < nodes.count(); i++) {
+                    QDomNode node = nodes.at(i);
+                    QDomNode importedNode = doc1.importNode(node, true);
+                    root1.appendChild(importedNode);
+                }
 
-    // Append doc#1 nodes to doc#2
-    QDomElement commands = doc2.documentElement().firstChildElement("commands");
-    for(int i=0; i<elements.count(); i++) {
-        commands.appendChild(elements[i]);
+                QDateTime now = QDateTime::currentDateTime();
+                QString timestamp = now.toString(QLatin1String("yyyyMMdd-hhmmss"));
+                QString copyfile = QString("%1.%2").arg(this->fName).arg(timestamp);
+                QFile::copy(this->fName, copyfile);
+
+                QFile outputFile(this->fName);
+
+                if (outputFile.open(QFile::Text | QFile::WriteOnly | QFile::Truncate)) {
+                    QTextStream stream(&outputFile);
+                    doc1.save(stream, 4); // Use indentation of 4 spaces
+                    outputFile.close();
+                    // xmlCommands.setContent(&outputFile);
+                    openXMLFile();
+                    populateCommandsList();
+                    dirtyFlag = false;
+                    ui->lblDirtyFlag->setText("*saved*");
+                    ui->btnSaveXML->setEnabled(false);
+                } else {
+                    // Error opening output file
+                    qDebug() << "Error opening output file";
+                    showMessage(QString("Error opening output file"));
+                }
+            } else {
+                qDebug() << "Error loading XML #2 content";
+                showMessage(QString("Error loading XML #2 content from %1").arg(f2));
+            }
+        } else {
+            // Error loading XML content
+            qDebug() << "Error loading XML #1 content";
+            showMessage(QString("Error loading XML #1 content from %1").arg(f1));
+        }
+        file1.close();
+        file2.close();
+    } else {
+        // Error opening files
+        qDebug() << "Error opening files";
+        showMessage(QString("Error opening files %1 and/or %2").arg(f1).arg(f2));
     }
-    QFile fNew("/home/jpl/out.xml");
-    if(!fNew.open(QIODevice::ReadWrite | QIODevice::Text)) {
-        qDebug( "Failed to open file for writing." );
-        return;
-    }
-    QTextStream stream(&fNew);
-    stream << doc2.toString();
-    fNew.close();
 }
 
 //******************************************************************************
@@ -295,7 +306,7 @@ void MainWindow::mergeXML(QFile fSource, QFile fTarget) {
 void MainWindow::slotDoImportXML() {
     QString source = QFileDialog::getOpenFileName(this, tr("Import File"), QDir::homePath(), tr("XML File (*.xml)"));
     if (!source.isEmpty()) {
-        mergeXML(QFile(source), this->fName);
+        mergeXML(source, this->fName);
         showMessage(QString("XML file %1 imported into current XML file").arg(source));
     } else {
         showMessage("XML file not imported");

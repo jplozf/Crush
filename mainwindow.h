@@ -58,7 +58,7 @@ private:
     QLabel *lblTimeElpased;
     QLabel *lblLED;
     QLabel *lblPID;
-    void mergeXML(QFile fSource, QFile fTarget);
+    void mergeXML(QString f1, QString f2);
 
 private slots:
     void slotSelectCommand(const QString);
