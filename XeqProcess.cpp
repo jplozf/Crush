@@ -34,10 +34,23 @@ XeqProcess::XeqProcess(QString program, QStringList arguments, App *app, Ui::Mai
         connect(&mProcess, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorOccurred(QProcess::ProcessError)));
 
         mProcess.start(program, arguments);
+
+        QTimer *timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+        // timer->start(100);
+
         this->PID = mProcess.processId();
         QLabel *lblPID = this->ui->statusBar->findChild<QLabel*>("lblPID");
         lblPID->setText(QString("PID:%1").arg(this->PID, 16));
     }
+}
+
+//******************************************************************************
+// update()
+//******************************************************************************
+void XeqProcess::update() {
+    qDebug() << "FLUSH";
+    fflush(stdout);
 }
 
 //******************************************************************************
@@ -149,7 +162,7 @@ void XeqProcess::readyReadStandardOutput() {
         cursor.movePosition(QTextCursor::End);
         outWidget->setTextCursor(cursor);
     }
-    // qDebug() << out;
+    qDebug() << out;
 }
 
 //******************************************************************************
@@ -164,7 +177,7 @@ void XeqProcess::readyReadStandardError() {
         cursor.movePosition(QTextCursor::End);
         errWidget->setTextCursor(cursor);
     }
-    // qDebug() << err;
+    qDebug() << err;
 }
 
 //******************************************************************************

@@ -343,15 +343,22 @@ void MainWindow::slotRunCommand() {
             slotClearConsole();
         }
     } else {
-        if (this->ui->chkClearConsole->isChecked()) {
-            this->ui->txtConsoleOut->setText("");
+        if (!app->processRunning) {
+            qDebug() << "NEW PROCESS";
+            if (this->ui->chkClearConsole->isChecked()) {
+                this->ui->txtConsoleOut->setText("");
+            }
+            this->ui->lblTitle->setText(cmd);
+            QStringList args = cmd.split(" ");
+            QString pgm = args.first();
+            args.removeFirst();
+            xp = new XeqProcess(pgm, args, app, ui);
+            showMessage(QString("Process %1 launched").arg(xp->PID));
+        } else {
+            qDebug() << "SEND TEXT";
+            xp->mProcess.write(cmd.toLatin1());
         }
-        this->ui->lblTitle->setText(cmd);
-        QStringList args = cmd.split(" ");
-        QString pgm = args.first();
-        args.removeFirst();
-        xp = new XeqProcess(pgm, args, app, ui);
-        showMessage(QString("Process %1 launched").arg(xp->PID));
+            // TODO : Send text to process if process is already running => xp->mProcess.write(...);
     }
     this->ui->txtCommand->selectAll();
     this->aCommands.append(cmd);
@@ -624,6 +631,8 @@ bool MainWindow::openXMLFile(QString fName) {
 
         f.close();
         rc = true;
+    } else {
+        // TODO : manage the case where there is no crush.xml file, copy the default one from the resource file
     }
     ui->txtEditXML->blockSignals(false);
     return rc;

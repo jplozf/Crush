@@ -18,6 +18,7 @@ SOURCES += \
     BasicXMLSyntaxHighlighter.cpp \
     XeqProcess.cpp \
     app.cpp \
+    codeeditor.cpp \
     commandui.cpp \
     constants.cpp \
     downloader.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     BasicXMLSyntaxHighlighter.h \
     XeqProcess.h \
     app.h \
+    codeeditor.h \
     commandui.h \
     constants.h \
     downloader.h \

@@ -35,6 +35,7 @@ private slots:
     void readyReadStandardError();
     void finished(int exitCode, QProcess::ExitStatus exitStatus);
     void errorOccurred(QProcess::ProcessError error);
+    void update();
 };
 
 #endif // XEQPROCESS_H

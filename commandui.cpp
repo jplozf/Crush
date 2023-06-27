@@ -1463,7 +1463,6 @@ class CommandsUI():
             return(" ")
 
 """
-TODO :
 
 * addOptionNewFile
 * addOptionFiles
