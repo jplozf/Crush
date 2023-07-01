@@ -167,7 +167,7 @@ void MainWindow::slotSelectCommand(const QString cmd) {
 //******************************************************************************
 void MainWindow::showMessage(const QString &message, int timeout) {
     if (timeout == -1) {
-        timeout = app->appSettings->get("STATUSBAR_TIMEOUT").toInt();
+        timeout = app->appSettings->get("APPLICATION_STATUSBAR_TIMEOUT").toInt();
     }
     ui->statusBar->showMessage(message, timeout);
 }
@@ -459,13 +459,18 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
 // closeEvent()
 //******************************************************************************
 void MainWindow::closeEvent(QCloseEvent *event) {
-    QMessageBox::StandardButton rc;
-    rc = QMessageBox::question(this, app->appConstants->getQString("APPLICATION_NAME"), QString("Really quit ?\n"), QMessageBox::Yes|QMessageBox::No);
-    if (rc == QMessageBox::Yes) {
+    if (app->appSettings->get("APPLICATION_CONFIRM_EXIT").toBool() == true) {
+        QMessageBox::StandardButton rc;
+        rc = QMessageBox::question(this, app->appConstants->getQString("APPLICATION_NAME"), QString("Really quit ?\n"), QMessageBox::Yes|QMessageBox::No);
+        if (rc == QMessageBox::Yes) {
+            saveSettings();
+            event->accept();
+        } else {
+            event->ignore();
+        }
+    } else {
         saveSettings();
         event->accept();
-    } else {
-        event->ignore();
     }
 }
 
@@ -632,7 +637,31 @@ bool MainWindow::openXMLFile(QString fName) {
         f.close();
         rc = true;
     } else {
-        // TODO : manage the case where there is no crush.xml file, copy the default one from the resource file
+        // Manage the case where there is no crush.xml file, copy the default one from the resource file
+        QMessageBox::StandardButton msg;
+        msg = QMessageBox::question(this, app->appConstants->getQString("APPLICATION_NAME"), QString("XML file not found.\nOpening the default one ?\n"), QMessageBox::Yes|QMessageBox::No);
+        if (msg == QMessageBox::Yes) {
+            QString fName = Utils::pathAppend(app->appDir, QString::fromUtf8(app->appConstants->getString("COMMANDS_FILE").c_str()));
+#ifdef Q_OS_LINUX
+            QFile::copy(":/crush_lnx.xml", fName);
+#else
+            QFile::copy(":/crush_win.xml", fName);
+#endif
+            this->fName = fName;
+            QFile f(fName);
+            if (f.open(QIODevice::Text | QIODevice::ReadOnly )) {
+                xmlCommands.setContent(&f);
+
+                QString content;
+                f.seek(0);
+                while(!f.atEnd())
+                    content.append(f.readLine());
+                ui->txtEditXML->setPlainText(content);
+
+                f.close();
+                rc = true;
+            }
+        }
     }
     ui->txtEditXML->blockSignals(false);
     return rc;
