@@ -137,12 +137,11 @@ void Settings::form(QWidget *w) {
     QFormLayout *form = new QFormLayout(w);
     form->setLabelAlignment(Qt::AlignRight);
     QString previousKeyword;
-    for(auto e : settings.keys())
-    {
+    for(auto e : settings.keys()) {
         QString currentKeyword = e.section("_", 0, 0);
         if (currentKeyword != previousKeyword) {
             previousKeyword = currentKeyword;
-            QLabel *lblKeyword = new QLabel(currentKeyword);
+            QLabel *lblKeyword = new QLabel("► " + currentKeyword);
             lblKeyword->setStyleSheet("font-weight: bold;");
             form->addRow(lblKeyword);
         }
