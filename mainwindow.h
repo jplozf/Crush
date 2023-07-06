@@ -59,10 +59,12 @@ private:
     QLabel *lblLED;
     QLabel *lblPID;
     void mergeXML(QString f1, QString f2);
+    void getEnvironment();
 
 private slots:
     void slotSelectCommand(const QString);
     void slotDoExit();
+    void slotDoOpenFile();
     void slotDoEditXML();
     void slotCursorPosition();
     void slotTextChanged();

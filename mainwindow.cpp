@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     iCommands = 0;
 
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(slotDoExit()));
+    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(slotDoOpenFile()));
     connect(ui->cbxCommands,SIGNAL(currentIndexChanged(const QString)),this,SLOT(slotSelectCommand(const QString)));
     connect(ui->btnEditXML, SIGNAL(clicked()), this, SLOT(slotDoEditXML()));
     connect(ui->txtEditXML, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPosition()));
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainW
     setWindowTitle(appTitle);
 
     QTimer::singleShot(500, this, &MainWindow::setDelayed);
+    getEnvironment();
  }
 
 //******************************************************************************
@@ -615,9 +617,23 @@ void MainWindow::buildCommandScreen(QString cmd) {
 }
 
 //******************************************************************************
+// slotDoOpenFile()
+//******************************************************************************
+void MainWindow::slotDoOpenFile() {
+    QString source = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("XML File (*.xml)"));
+    if (!source.isEmpty()) {
+        openXMLFile(source);
+        showMessage(QString("Opening XML file %1").arg(source));
+    } else {
+        showMessage("No XML file specified");
+    }
+}
+
+//******************************************************************************
 // openXMLFile()
 //******************************************************************************
 bool MainWindow::openXMLFile(QString fName) {
+    // TODO : Manage "open file" option from main menu
     bool rc(false);
     ui->txtEditXML->blockSignals(true);
     if (fName == "*DEFAULT") {
@@ -665,6 +681,23 @@ bool MainWindow::openXMLFile(QString fName) {
     }
     ui->txtEditXML->blockSignals(false);
     return rc;
+}
+
+//******************************************************************************
+// getEnvironment()
+//******************************************************************************
+void MainWindow::getEnvironment() {
+    QProcessEnvironment qpe  = QProcessEnvironment::systemEnvironment();
+    QFormLayout *form = new QFormLayout(ui->boxEnvironment);
+
+    QStringList keys = qpe.keys();
+    foreach (const QString& varName, keys) {
+        QLabel* label = new QLabel(varName);
+        QLineEdit* lineEdit = new QLineEdit(qpe.value(varName));
+        lineEdit->setReadOnly(true);
+        form->addRow(label, lineEdit);
+    }
+    ui->boxEnvironment->setLayout(form);
 }
 
 /*
