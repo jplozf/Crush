@@ -3,7 +3,8 @@
 //******************************************************************************
 // MainWindow()
 //******************************************************************************
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QApplication *a, QWidget *parent) : QMainWindow(parent) , ui(new Ui::MainWindow) {
+    this->a = a;
     ui->setupUi(this);
     app = new App();
     dirtyFlag = false;
@@ -61,6 +62,11 @@ void MainWindow::setDelayed() {
 //******************************************************************************
 void MainWindow::initUI() {
     //**************************************************************************
+    // Theme
+    //**************************************************************************
+    setTheme();
+
+    //**************************************************************************
     // Commands Editor's settings
     //**************************************************************************
     QFont font;
@@ -112,7 +118,7 @@ void MainWindow::initUI() {
     //**************************************************************************
     // Settings Form
     //**************************************************************************
-    app->appSettings->form(ui->boxSettings);
+    app->appSettings->form(this);
 
     //**************************************************************************
     // StatusBar
@@ -152,6 +158,51 @@ void MainWindow::initUI() {
     QString html = app->appConstants->aboutText;
     html += stream.readAll();
     ui->txtAbout->setHtml(html);
+}
+
+//******************************************************************************
+// setTheme()
+//******************************************************************************
+void MainWindow::setTheme() {
+    QString tName = app->appSettings->get("APPLICATION_THEME").toString();
+    if (tName != "DARK" && tName != "LIGHT" && tName != "ALTERNATE") {
+        tName = "ALTERNATE";
+    }
+    if (tName == "ALTERNATE") {
+        this->a->setStyle("Fusion");
+        QPalette palette = QPalette();
+        palette.setColor(QPalette::Window, QColor(app->appSettings->get("THEME_WINDOW").toString()));
+        palette.setColor(QPalette::WindowText, QColor(app->appSettings->get("THEME_WINDOW_TEXT").toString()));
+        palette.setColor(QPalette::Base, QColor(app->appSettings->get("THEME_BASE").toString()));
+        palette.setColor(QPalette::AlternateBase, QColor(app->appSettings->get("THEME_ALTERNATE_BASE").toString()));
+        palette.setColor(QPalette::ToolTipBase, QColor(app->appSettings->get("THEME_TOOLTIP_BASE").toString()));
+        palette.setColor(QPalette::ToolTipText, QColor(app->appSettings->get("THEME_TOOLTIP_TEXT").toString()));
+        palette.setColor(QPalette::Text, QColor(app->appSettings->get("THEME_TEXT").toString()));
+        palette.setColor(QPalette::Button, QColor(app->appSettings->get("THEME_BUTTON").toString()));
+        palette.setColor(QPalette::ButtonText, QColor(app->appSettings->get("THEME_BUTTON_TEXT").toString()));
+        palette.setColor(QPalette::BrightText, QColor(app->appSettings->get("THEME_BRIGHT_TEXT").toString()));
+        palette.setColor(QPalette::Link, QColor(app->appSettings->get("THEME_LINK").toString()));
+        palette.setColor(QPalette::Highlight, QColor(app->appSettings->get("THEME_HIGHLIGHT").toString()));
+        palette.setColor(QPalette::HighlightedText, QColor(app->appSettings->get("THEME_HIGHLIGHTED_TEXT").toString()));
+        a->setPalette(palette);
+    } else {
+        this->a->setStyle("Fusion");
+        QPalette palette = QPalette();
+        palette.setColor(QPalette::Window, QColor(app->appConstants->theme[tName][0]));
+        palette.setColor(QPalette::WindowText, QColor(app->appConstants->theme[tName][1]));
+        palette.setColor(QPalette::Base, QColor(app->appConstants->theme[tName][2]));
+        palette.setColor(QPalette::AlternateBase, QColor(app->appConstants->theme[tName][3]));
+        palette.setColor(QPalette::ToolTipBase, QColor(app->appConstants->theme[tName][4]));
+        palette.setColor(QPalette::ToolTipText, QColor(app->appConstants->theme[tName][5]));
+        palette.setColor(QPalette::Text, QColor(app->appConstants->theme[tName][6]));
+        palette.setColor(QPalette::Button, QColor(app->appConstants->theme[tName][7]));
+        palette.setColor(QPalette::ButtonText, QColor(app->appConstants->theme[tName][8]));
+        palette.setColor(QPalette::BrightText, QColor(app->appConstants->theme[tName][9]));
+        palette.setColor(QPalette::Link, QColor(app->appConstants->theme[tName][10]));
+        palette.setColor(QPalette::Highlight, QColor(app->appConstants->theme[tName][11]));
+        palette.setColor(QPalette::HighlightedText, QColor(app->appConstants->theme[tName][12]));
+        a->setPalette(palette);
+    }
 }
 
 
@@ -223,7 +274,9 @@ void MainWindow::slotTextChanged() {
 // slotDoSaveXML()
 //******************************************************************************
 void MainWindow::slotDoSaveXML() {
+    qDebug() << "Save event";
     QFile f(this->fName);
+    qDebug() << this->fName;
     if (f.open(QFile::Text | QFile::WriteOnly | QFile::Truncate)) {
         QTextStream stream(&f);
         qDebug() << ui->txtEditXML->document()->toPlainText();
@@ -236,7 +289,8 @@ void MainWindow::slotDoSaveXML() {
         ui->btnSaveXML->setEnabled(false);
         showMessage("XML file saved");
     } else {
-        showMessage("Can't save XML file");
+        showMessage(QString("Can't save XML file : %1").arg(f.errorString()));
+        qDebug() << f.errorString();
     }
 }
 
@@ -358,7 +412,7 @@ void MainWindow::slotRunCommand() {
             showMessage(QString("Process %1 launched").arg(xp->PID));
         } else {
             qDebug() << "SEND TEXT";
-            xp->mProcess.write(cmd.toLatin1());
+            xp->mProcess->write(cmd.toLatin1());
         }
             // TODO : Send text to process if process is already running => xp->mProcess.write(...);
     }
@@ -374,7 +428,7 @@ void MainWindow::slotRunCommand() {
 //******************************************************************************
 void MainWindow::slotBreakCommand() {
     if (xp) {
-        if (xp->mProcess.state() != QProcess::NotRunning) {
+        if (xp->mProcess->state() != QProcess::NotRunning) {
             showMessage(QString("Process %1 killed").arg(xp->PID));
             xp->killMe();
         } else {
@@ -637,7 +691,8 @@ bool MainWindow::openXMLFile(QString fName) {
     bool rc(false);
     ui->txtEditXML->blockSignals(true);
     if (fName == "*DEFAULT") {
-        fName = Utils::pathAppend(app->appDir, QString::fromUtf8(app->appConstants->getString("COMMANDS_FILE").c_str()));
+        // fName = Utils::pathAppend(app->appDir, QString::fromUtf8(app->appConstants->getString("COMMANDS_FILE").c_str()));
+        fName = Utils::pathAppend(app->appDir, app->appConstants->getQString("COMMANDS_FILE"));
     }
     this->fName = fName;
     QFile f(fName);
@@ -657,7 +712,8 @@ bool MainWindow::openXMLFile(QString fName) {
         QMessageBox::StandardButton msg;
         msg = QMessageBox::question(this, app->appConstants->getQString("APPLICATION_NAME"), QString("XML file not found.\nOpening the default one ?\n"), QMessageBox::Yes|QMessageBox::No);
         if (msg == QMessageBox::Yes) {
-            QString fName = Utils::pathAppend(app->appDir, QString::fromUtf8(app->appConstants->getString("COMMANDS_FILE").c_str()));
+            // QString fName = Utils::pathAppend(app->appDir, QString::fromUtf8(app->appConstants->getString("COMMANDS_FILE").c_str()));
+            QString fName = Utils::pathAppend(app->appDir, app->appConstants->getQString("COMMANDS_FILE"));
 #ifdef Q_OS_LINUX
             QFile::copy(":/crush_lnx.xml", fName);
 #else
@@ -673,7 +729,7 @@ bool MainWindow::openXMLFile(QString fName) {
                 while(!f.atEnd())
                     content.append(f.readLine());
                 ui->txtEditXML->setPlainText(content);
-
+                f.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
                 f.close();
                 rc = true;
             }

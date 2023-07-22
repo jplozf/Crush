@@ -6,23 +6,26 @@
 //******************************************************************************
 Constants::Constants()
 {
-    constants["AUTHOR"]    = std::string("J.-P. Liguori");
-    constants["COPYRIGHT"] = std::string("Copyright 2022, J.-P. Liguori");
-    constants["LICENSE"]   = std::string("GPL");
-    constants["VERSION"]   = std::string("0.9.a");
-    constants["EMAIL"]     = std::string("jpl@ozf.fr");
-    constants["NVERSION"]  = 90;
+    constants["AUTHOR"]    = QVariant("J.-P. Liguori");
+    constants["COPYRIGHT"] = QVariant("Copyright 2022, J.-P. Liguori");
+    constants["LICENSE"]   = QVariant("GPL");
+    constants["VERSION"]   = QVariant("0.9.a");
+    constants["EMAIL"]     = QVariant("jpl@ozf.fr");
+    constants["NVERSION"]  = QVariant(90);
 
-    constants["ORGANIZATION_NAME"]      = std::string("Open Zero Factory");
-    constants["ORGANIZATION_DOMAIN"]    = std::string("www.ozf.fr/#crush");
-    constants["APPLICATION_NAME"]       = std::string("Crush");
-    constants["APP_FOLDER"]             = std::string(".crush");
-    constants["SETTINGS_FILE"]          = std::string("settings.cfg");
-    constants["COMMANDS_FILE"]          = std::string("crush.xml");
-    constants["WEB_REPOSITORY"]         = std::string("https://www.ozf.fr/crush/");
-    constants["XML_SUBFOLDER"]          = std::string("xml/");
+    constants["ORGANIZATION_NAME"]      = QVariant("Open Zero Factory");
+    constants["ORGANIZATION_DOMAIN"]    = QVariant("www.ozf.fr/#crush");
+    constants["APPLICATION_NAME"]       = QVariant("Crush");
+    constants["APP_FOLDER"]             = QVariant(".crush");
+    constants["SETTINGS_FILE"]          = QVariant("settings.cfg");
+    constants["COMMANDS_FILE"]          = QVariant("crush.xml");
+    constants["WEB_REPOSITORY"]         = QVariant("https://www.ozf.fr/crush/");
+    constants["XML_SUBFOLDER"]          = QVariant("xml/");
 
-    constants["NOT_AVAILABLE_LABEL"]    = std::string("NOT_AVAILABLE_LABEL");
+    constants["NOT_AVAILABLE_LABEL"]    = QVariant("NOT_AVAILABLE_LABEL");
+
+    theme["LIGHT"] = QStringList({"#efefef", "#000000", "#ffffff", "#f7f7f7", "#ffffdc", "#000000", "#000000", "#efefef", "#000000", "#ffffff", "#0000ff", "#308cc6", "#ffffff"});
+    theme["DARK"] = QStringList({"#353535", "#ffffff", "#191919", "#353535", "#ffffff", "#ffffff", "#ffffff", "#353535", "#ffffff", "#ff0000", "#2a82da", "#2a82da", "#000000"});
 
     this->aboutText = setAbout();
 }
@@ -30,30 +33,22 @@ Constants::Constants()
 //******************************************************************************
 // getInt()
 //******************************************************************************
-int Constants::getInt(std::string param) {
-    return (std::any_cast<int>(this->constants[param]));
+int Constants::getInt(QString param) {
+    return (this->constants[param].toInt());
 }
 
 //******************************************************************************
 // getBool()
 //******************************************************************************
-bool Constants::getBool(std::string param) {
-    return (std::any_cast<bool>(this->constants[param]));
-}
-
-//******************************************************************************
-// getString()
-//******************************************************************************
-std::string Constants::getString(std::string param) {
-    return (std::any_cast<std::string>(this->constants[param]));
+bool Constants::getBool(QString param) {
+    return (this->constants[param].toBool());
 }
 
 //******************************************************************************
 // getQString()
 //******************************************************************************
-QString Constants::getQString(std::string param) {
-    std::string t = std::any_cast<std::string>(this->constants[param]);
-    return (QString::fromUtf8(t.c_str()));
+QString Constants::getQString(QString param) {
+    return (this->constants[param].value<QString>());
 }
 
 //******************************************************************************

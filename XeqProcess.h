@@ -8,7 +8,13 @@
 #include <QTime>
 #include <QMessageBox>
 #include <QTimer>
+#include <QTextCodec>
+#include <QSize>
+#include <QScreen>
+#include <QApplication>
 #include "app.h"
+#include "ui_mainwindow.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,7 +27,7 @@ public:
     explicit XeqProcess(QString program, QStringList arguments, App *app, Ui::MainWindow *ui);
     void killMe();
     qint64 PID;
-    QProcess mProcess;
+    QProcess *mProcess;
 
 private:
     QTextEdit *outWidget;
@@ -29,6 +35,7 @@ private:
     App *app;
     Ui::MainWindow *ui;
     QTime t;
+    void notify(QString message, QString title = "*DEFAULT");
 
 private slots:
     void readyReadStandardOutput();

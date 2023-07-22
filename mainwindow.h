@@ -30,7 +30,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QApplication *a, QWidget *parent = nullptr);
     ~MainWindow();
     App *app;
     void closeEvent(QCloseEvent *);
@@ -38,9 +38,11 @@ public:
     void readSettings();
     void initUI();
     bool dirtyFlag;
+    Ui::MainWindow *ui;
+    void setTheme();
 
 private:
-    Ui::MainWindow *ui;
+    QApplication *a;
     void populateCommandsList();
     void buildCommandScreen(QString cmd);
     bool openXMLFile(QString fName = "*DEFAULT");

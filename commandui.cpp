@@ -648,6 +648,7 @@ void CommandUI::uiSysnameEvent(QLineEdit* lineEdit, QString value, const QDomEle
 //******************************************************************************
 void CommandUI::uiButtonFileEvent(QLineEdit* fileEdit, QString ext, int row) {
     QString fileName = QFileDialog::getOpenFileName(NULL, tr("Open File"), QDir::currentPath(), ext);
+    // FIXME : Reverse backslashes on Windows
     fileEdit->setText(fileName);
     /*
     filename = str(QFileDialog.getOpenFileName(None, 'Open file', '', ext))
@@ -660,6 +661,7 @@ void CommandUI::uiButtonFileEvent(QLineEdit* fileEdit, QString ext, int row) {
 //******************************************************************************
 void CommandUI::uiButtonNewFileEvent(QLineEdit* fileEdit, QString ext, int row) {
     QString fileName = QFileDialog::getSaveFileName(NULL, tr("New File"), QDir::currentPath(), ext);
+    // FIXME : Reverse backslashes on Windows
     fileEdit->setText(fileName);
     /*
     filename = str(QFileDialog.getOpenFileName(None, 'Open file', '', ext))
@@ -693,6 +695,7 @@ void CommandUI::uiDirEvent(QLineEdit* lineEdit, QString value, const QDomElement
 //******************************************************************************
 void CommandUI::uiButtonDirEvent(QLineEdit* fileEdit, int row) {
     QString fileName = QFileDialog::getExistingDirectory(NULL, tr("Open directory"), QDir::currentPath());
+    // FIXME : Reverse backslashes on Windows
     fileEdit->setText(fileName);
 }
 
@@ -722,6 +725,7 @@ void CommandUI::uiNewDirEvent(QLineEdit* lineEdit, QString value, const QDomElem
 //******************************************************************************
 void CommandUI::uiButtonNewDirEvent(QLineEdit* fileEdit, int row) {
     QString fileName = QFileDialog::getExistingDirectory(NULL, tr("New directory source"), QDir::currentPath());
+    // FIXME : Reverse backslashes on Windows
     fileEdit->setText(fileName);
 }
 

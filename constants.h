@@ -15,12 +15,13 @@ class Constants
 {
 public:
     Constants();
-    std::unordered_map<std::string, std::any> constants;
-    int getInt(std::string param);
-    bool getBool(std::string param);
-    QString getQString(std::string param);
-    std::string getString(std::string param);
+    int getInt(QString param);
+    bool getBool(QString param);
+    QString getQString(QString param);
     QString aboutText;
+    QMap<QString, QVariant> constants;
+    QMap<QString, QStringList> theme;
+
 
 private:
     QString setAbout();

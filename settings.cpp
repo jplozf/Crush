@@ -1,4 +1,5 @@
 #include "settings.h"
+#include "mainwindow.h"
 
 //******************************************************************************
 // Settings()
@@ -12,8 +13,10 @@ Settings::Settings()
     defaults["APPLICATION_CONFIRM_EXIT"] = QVariant(true);
     defaults["APPLICATION_THEME"] = QVariant("LIGHT"); // DARK, LIGHT or ALTERNATE
     defaults["APPLICATION_STATUSBAR_TIMEOUT"] = QVariant(3000);
+    defaults["APPLICATION_NOTIFICATION_TIMEOUT"] = QVariant(2000);
+    defaults["APPLICATION_NOTIFICATION_SYSTEM"] = QVariant(true);
 
-    defaults["CONSOLE_PROMPT"] = QVariant("Gosh >>> ");
+    defaults["CONSOLE_PROMPT"] = QVariant("Crush >>> ");
     defaults["CONSOLE_BACKGROUND"] = QVariant("white");
     defaults["CONSOLE_OUT_COLOR"] = QVariant("black");
     defaults["CONSOLE_ERR_COLOR"] = QVariant("red");
@@ -23,6 +26,7 @@ Settings::Settings()
     defaults["CONSOLE_FONT_STYLE"] = QVariant("normal");
     defaults["CONSOLE_FONT_WEIGHT"] = QVariant("normal");
     defaults["CONSOLE_CODEPAGE"] = QVariant("cp850");
+    defaults["CONSOLE_SHELL_PREFIX"] = QVariant("cmd /c");
 
     defaults["XML_KEYWORD_COLOR"] = QVariant("#8B008B");
     defaults["XML_KEYWORD_WEIGHT"] = QVariant(QFont::Bold);
@@ -54,24 +58,6 @@ Settings::Settings()
     defaults["THEME_LINK"] = QVariant("#0000ff");
     defaults["THEME_HIGHLIGHT"] = QVariant("#308cc6");
     defaults["THEME_HIGHLIGHTED_TEXT"] = QVariant("#ffffff");
-
-/*
-    palette.setColor(QPalette.Window, QColor(theme[0]));
-    palette.setColor(QPalette.WindowText, QColor(theme[1]));
-    palette.setColor(QPalette.Base, QColor(theme[2]));
-    palette.setColor(QPalette.AlternateBase, QColor(theme[3]));
-    palette.setColor(QPalette.ToolTipBase, QColor(theme[4]));
-    palette.setColor(QPalette.ToolTipText, QColor(theme[5]));
-    palette.setColor(QPalette.Text, QColor(theme[6]));
-    palette.setColor(QPalette.Button, QColor(theme[7]));
-    palette.setColor(QPalette.ButtonText, QColor(theme[8]));
-    palette.setColor(QPalette.BrightText, QColor(theme[9]));
-    palette.setColor(QPalette.Link, QColor(theme[10]));
-    palette.setColor(QPalette.Highlight, QColor(theme[11]));
-    palette.setColor(QPalette.HighlightedText, QColor(theme[12]));
-['THEME_ALTERNATE', ["#efefef","#000000","#ffffff","#f7f7f7","#ffffdc","#000000","#000000","#efefef","#000000","#ffffff","#0000ff","#308cc6","#ffffff"]],
-*/
-
 
     // Read the settings from user's settings
     read();
@@ -133,8 +119,8 @@ void Settings::read() {
 //******************************************************************************
 // form()
 //******************************************************************************
-void Settings::form(QWidget *w) {
-    QFormLayout *form = new QFormLayout(w);
+void Settings::form(MainWindow *w) {
+    QFormLayout *form = new QFormLayout(w->ui->boxSettings);
     form->setLabelAlignment(Qt::AlignRight);
     QString previousKeyword;
     for(auto e : settings.keys()) {
@@ -147,7 +133,7 @@ void Settings::form(QWidget *w) {
         }
         QLabel *lblSetting = new QLabel(e);
         QLineEdit *txtSetting = new QLineEdit(settings.value(e).toString());
-        connect(txtSetting, &QLineEdit::textChanged, [=]{handleTextChanged(lblSetting, txtSetting);});
+        connect(txtSetting, &QLineEdit::textChanged, [=]{handleTextChanged(w, lblSetting, txtSetting);});
         form->addRow(lblSetting, txtSetting);
     }
     w->setLayout(form);
@@ -156,8 +142,9 @@ void Settings::form(QWidget *w) {
 //******************************************************************************
 // handleTextChanged()
 //******************************************************************************
-void Settings::handleTextChanged(QLabel *lbl, QLineEdit *txt) {
+void Settings::handleTextChanged(MainWindow *w, QLabel *lbl, QLineEdit *txt) {
     // qDebug(lbl->text().toLatin1());
     settings[lbl->text().toLatin1()] = QVariant(txt->text().toLatin1());
     write();
+    w->setTheme();
 }

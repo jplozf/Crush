@@ -1,5 +1,4 @@
 #include "XeqProcess.h"
-#include "qwidget.h"
 #include "ui_mainwindow.h"
 
 //******************************************************************************
@@ -11,6 +10,7 @@ XeqProcess::XeqProcess(QString program, QStringList arguments, App *app, Ui::Mai
         this->app = app;
         this->ui = ui;
         this->app->processRunning = true;
+        this->mProcess = new QProcess();
 
         QLabel *lblRC = this->ui->statusBar->findChild<QLabel*>("lblRC");
         lblRC->setText(QString("RC=R"));
@@ -28,18 +28,35 @@ XeqProcess::XeqProcess(QString program, QStringList arguments, App *app, Ui::Mai
         outWidget->append("");
         outWidget->append(this->app->appSettings->get("CONSOLE_PROMPT").toString() + program + " " +arguments.join(" "));
 
-        connect(&mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
-        connect(&mProcess, SIGNAL(readyReadStandardError()), this, SLOT(readyReadStandardError()));
-        connect(&mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
-        connect(&mProcess, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorOccurred(QProcess::ProcessError)));
+        connect(mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
+        connect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(readyReadStandardError()));
+        connect(mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
+        connect(mProcess, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorOccurred(QProcess::ProcessError)));
 
-        mProcess.start(program, arguments);
+        // TODO : Manage the Current Working Directory for the process
+
+        QString prefix = this->app->appSettings->get("CONSOLE_SHELL_PREFIX").toString();
+        if (prefix != "") {
+            QStringList prefArgs = prefix.split(" ");
+            prefArgs.append(program);
+            program = prefArgs[0];
+            int i(0);
+            for (const auto& a : prefArgs) {
+                if (i > 0) {
+                    arguments.insert(i-1, a);
+                }
+                i++;
+            }
+        }
+        qDebug() << program;
+        qDebug() << arguments;
+        mProcess->start(program, arguments);
 
         QTimer *timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(update()));
         // timer->start(100);
 
-        this->PID = mProcess.processId();
+        this->PID = mProcess->processId();
         QLabel *lblPID = this->ui->statusBar->findChild<QLabel*>("lblPID");
         lblPID->setText(QString("PID:%1").arg(this->PID, 16));
     }
@@ -102,16 +119,7 @@ void XeqProcess::errorOccurred(QProcess::ProcessError error) {
     lblPID->setText("                    ");
 
     if (this->ui->chkNotification->isChecked()) {
-#ifdef Q_OS_LINUX
-        system("notify-send \"Crush\" \"Command completed in error.\"");
-        qDebug() << "NOTIFICATION";
-#else
-        QMessageBox *mbox = new QMessageBox;
-        mbox->setWindowTitle(tr("Crush"));
-        mbox->setText("Command completed in error.");
-        mbox->show();
-        QTimer::singleShot(2000, mbox, SLOT(hide()));
-#endif
+        notify("Command completed in error.");
     }
 }
 
@@ -137,16 +145,7 @@ void XeqProcess::finished(int exitCode, QProcess::ExitStatus exitStatus) {
     lblPID->setText("                    ");
 
     if (this->ui->chkNotification->isChecked()) {
-#ifdef Q_OS_LINUX
-        system("notify-send \"Crush\" \"Command completed successfully.\"");
-        qDebug() << "NOTIFICATION";
-#else
-        QMessageBox *mbox = new QMessageBox;
-        mbox->setWindowTitle(tr("Crush"));
-        mbox->setText("Command completed successfully.");
-        mbox->show();
-        QTimer::singleShot(2000, mbox, SLOT(hide()));
-#endif
+        notify("Command completed successfully.");
     }
 }
 
@@ -154,10 +153,11 @@ void XeqProcess::finished(int exitCode, QProcess::ExitStatus exitStatus) {
 // readyReadStandardOutput()
 //******************************************************************************
 void XeqProcess::readyReadStandardOutput() {
-    QString out = mProcess.readAllStandardOutput();
+    QByteArray out = mProcess->readAllStandardOutput();
     if (outWidget!=nullptr) {
+        QTextCodec *codec = QTextCodec::codecForName(this->app->appSettings->get("CONSOLE_CODEPAGE").toString().toStdString().c_str());
         outWidget->setTextColor(this->app->appSettings->get("CONSOLE_OUT_COLOR").value<QColor>());
-        outWidget->append(out.trimmed());
+        outWidget->append(codec->toUnicode(out.trimmed()));
         QTextCursor cursor = outWidget->textCursor();
         cursor.movePosition(QTextCursor::End);
         outWidget->setTextCursor(cursor);
@@ -169,10 +169,11 @@ void XeqProcess::readyReadStandardOutput() {
 // readyReadStandardError()
 //******************************************************************************
 void XeqProcess::readyReadStandardError() {
-    QString err = mProcess.readAllStandardError();
+    QByteArray err = mProcess->readAllStandardError();
     if (errWidget!=nullptr) {
+        QTextCodec *codec = QTextCodec::codecForName(this->app->appSettings->get("CONSOLE_CODEPAGE").toString().toStdString().c_str());
         errWidget->setTextColor(this->app->appSettings->get("CONSOLE_ERR_COLOR").value<QColor>());
-        errWidget->append(err.trimmed());
+        errWidget->append(codec->toUnicode(err.trimmed()));
         QTextCursor cursor = errWidget->textCursor();
         cursor.movePosition(QTextCursor::End);
         errWidget->setTextCursor(cursor);
@@ -184,6 +185,47 @@ void XeqProcess::readyReadStandardError() {
 // killMe()
 //******************************************************************************
 void XeqProcess::killMe() {
-    if (mProcess.state() != QProcess::NotRunning)
-        mProcess.kill();
+    if (mProcess->state() != QProcess::NotRunning)
+        mProcess->kill();
+}
+
+//******************************************************************************
+// notify()
+//******************************************************************************
+void XeqProcess::notify(QString message, QString title) {
+    if (title == "*DEFAULT") {
+        title = this->app->appConstants->getQString("APPLICATION_NAME");
+    }
+    qDebug() << "NOTIFICATION";
+#ifdef Q_OS_LINUX
+    if (this->app->appSettings->get("APPLICATION_NOTIFICATION_SYSTEM").toBool() == true) {
+        system(QString("notify-send \"%1\" \"%2\"").arg(title).arg(message));
+    } else {
+        QMessageBox *mbox = new QMessageBox;
+        mbox->setWindowTitle(title);
+        mbox->setText(message);
+        mbox->show();
+
+        QSize sizePopup = mbox->frameSize();
+        QScreen *screen = qApp->screens().at(0);
+        int heightScreen = screen->availableGeometry().height();
+        int widthScreen = screen->availableGeometry().width();
+        mbox->move(widthScreen - sizePopup.width() - 10, heightScreen - sizePopup.height() - 10);
+
+        QTimer::singleShot(this->app->appSettings->get("APPLICATION_NOTIFICATION_TIMEOUT").toInt(), mbox, SLOT(hide()));
+    }
+#else
+    QMessageBox *mbox = new QMessageBox;
+    mbox->setWindowTitle(title);
+    mbox->setText(message);
+    mbox->show();
+
+    QSize sizePopup = mbox->frameSize();
+    QScreen *screen = qApp->screens().at(0);
+    int heightScreen = screen->availableGeometry().height();
+    int widthScreen = screen->availableGeometry().width();
+    mbox->move(widthScreen - sizePopup.width() - 10, heightScreen - sizePopup.height() - 10);
+
+    QTimer::singleShot(this->app->appSettings->get("APPLICATION_NOTIFICATION_TIMEOUT").toInt(), mbox, SLOT(hide()));
+#endif
 }

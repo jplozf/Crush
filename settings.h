@@ -22,6 +22,8 @@
 #include "constants.h"
 #include "utils.h"
 
+class MainWindow;
+
 class Settings: public QObject
 {
     Q_OBJECT
@@ -33,8 +35,8 @@ public:
     QPushButton *btnTemplatesCutomizing;
     void write();
     void read();
-    void form(QWidget *);
-    void handleTextChanged(QLabel *lbl, QLineEdit *txt);
+    void form(MainWindow *w);
+    void handleTextChanged(MainWindow *w, QLabel *lbl, QLineEdit *txt);
 };
 
 #endif // SETTINGS_H
