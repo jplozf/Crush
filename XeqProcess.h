@@ -24,7 +24,7 @@ class XeqProcess : public QObject
 {
     Q_OBJECT
 public:
-    explicit XeqProcess(QString program, QStringList arguments, App *app, Ui::MainWindow *ui);
+    explicit XeqProcess(QString program, QStringList arguments, QString cwd, App *app, Ui::MainWindow *ui);
     void killMe();
     qint64 PID;
     QProcess *mProcess;

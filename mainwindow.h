@@ -77,6 +77,7 @@ private slots:
     void slotBreakCommand();
     void slotClearConsole();
     void slotCopyConsole();
+    void slotBrowseCWD();
 
 };
 #endif // MAINWINDOW_H

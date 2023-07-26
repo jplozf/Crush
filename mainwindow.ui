@@ -172,8 +172,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>366</width>
-                <height>244</height>
+                <width>360</width>
+                <height>223</height>
                </rect>
               </property>
              </widget>
@@ -189,7 +189,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tabConsoleOut">
            <property name="cursor">
@@ -266,7 +266,7 @@
               <item>
                <widget class="QLabel" name="lblCWD">
                 <property name="text">
-                 <string>CWD</string>
+                 <string>Current Working Directory</string>
                 </property>
                </widget>
               </item>
@@ -334,8 +334,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>465</width>
-                 <height>298</height>
+                 <width>458</width>
+                 <height>283</height>
                 </rect>
                </property>
               </widget>
@@ -362,8 +362,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>465</width>
-                 <height>298</height>
+                 <width>458</width>
+                 <height>283</height>
                 </rect>
                </property>
               </widget>
@@ -590,7 +590,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <x>0</x>
      <y>0</y>
      <width>899</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

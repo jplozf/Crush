@@ -4,7 +4,7 @@
 //******************************************************************************
 // XeqProcess()
 //******************************************************************************
-XeqProcess::XeqProcess(QString program, QStringList arguments, App *app, Ui::MainWindow *ui) {
+XeqProcess::XeqProcess(QString program, QStringList arguments, QString cwd, App *app, Ui::MainWindow *ui) {
     if (!app->processRunning) {
         this->t.start();
         this->app = app;
@@ -33,8 +33,6 @@ XeqProcess::XeqProcess(QString program, QStringList arguments, App *app, Ui::Mai
         connect(mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
         connect(mProcess, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorOccurred(QProcess::ProcessError)));
 
-        // TODO : Manage the Current Working Directory for the process
-
         QString prefix = this->app->appSettings->get("CONSOLE_SHELL_PREFIX").toString();
         if (prefix != "") {
             QStringList prefArgs = prefix.split(" ");
@@ -50,6 +48,7 @@ XeqProcess::XeqProcess(QString program, QStringList arguments, App *app, Ui::Mai
         }
         qDebug() << program;
         qDebug() << arguments;
+        mProcess->setWorkingDirectory(cwd);
         mProcess->start(program, arguments);
 
         QTimer *timer = new QTimer(this);

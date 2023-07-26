@@ -21,6 +21,7 @@ MainWindow::MainWindow(QApplication *a, QWidget *parent) : QMainWindow(parent) ,
     connect(ui->btnBreak, SIGNAL(clicked()), this, SLOT(slotBreakCommand()));
     connect(ui->btnClearConsole, SIGNAL(clicked()), this, SLOT(slotClearConsole()));
     connect(ui->btnCopyConsole, SIGNAL(clicked()), this, SLOT(slotCopyConsole()));
+    connect(ui->btnCWD, SIGNAL(clicked()), this, SLOT(slotBrowseCWD()));
     QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_F3), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(slotRunCommand()));
     connect(ui->btnEnter, SIGNAL(clicked()), this, SLOT(slotRunCommand()));
@@ -114,6 +115,7 @@ void MainWindow::initUI() {
 
     ui->lblDirtyFlag->setText("locked");
     ui->btnSaveXML->setEnabled(false);
+    ui->txtCWD->setText(QDir::homePath());
 
     //**************************************************************************
     // Settings Form
@@ -408,7 +410,7 @@ void MainWindow::slotRunCommand() {
             QStringList args = cmd.split(" ");
             QString pgm = args.first();
             args.removeFirst();
-            xp = new XeqProcess(pgm, args, app, ui);
+            xp = new XeqProcess(pgm, args, this->ui->txtCWD->text(), app, ui);
             showMessage(QString("Process %1 launched").arg(xp->PID));
         } else {
             qDebug() << "SEND TEXT";
@@ -755,6 +757,20 @@ void MainWindow::getEnvironment() {
     }
     ui->boxEnvironment->setLayout(form);
 }
+
+//******************************************************************************
+// slotBrowseCWD()
+//******************************************************************************
+void MainWindow::slotBrowseCWD() {
+    QString source = QFileDialog::getExistingDirectory(this, tr("Open Directory"), ui->txtCWD->text(), QFileDialog::ShowDirsOnly);
+    if (!source.isEmpty()) {
+        ui->txtCWD->setText(source);
+        showMessage(QString("Setting %1 as Current Working Directory").arg(source));
+    } else {
+        showMessage("No directory specified");
+    }
+}
+
 
 /*
 #-------------------------------------------------------------------------------
