@@ -198,7 +198,7 @@ void XeqProcess::notify(QString message, QString title) {
     qDebug() << "NOTIFICATION";
 #ifdef Q_OS_LINUX
     if (this->app->appSettings->get("APPLICATION_NOTIFICATION_SYSTEM").toBool() == true) {
-        system(QString("notify-send \"%1\" \"%2\"").arg(title).arg(message));
+        system(QString("notify-send \"%1\" \"%2\"").arg(title).arg(message).toStdString().c_str());
     } else {
         QMessageBox *mbox = new QMessageBox;
         mbox->setWindowTitle(title);
